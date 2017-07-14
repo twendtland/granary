@@ -10,14 +10,14 @@ CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
 SIZE = $(CCPATH)/arm-none-eabi-size
 
-INCLUDES += -I$(INCDIR) -I../../rye/header -I../../rye/inc -I../ -I../util \
+INCLUDES += -I$(INCDIR) -I../../rye/inc -I../ -I../util -I../devices/nrf52/inc -I../devices/nrf52/inc/registers \
 
 CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 -nostdlib -mcpu=cortex-m3 -mthumb
 
-$(EXECUTABLE): test.cpp
+$(EXECUTABLE): $(EXECUTABLE).cpp
 	$(CC) $(CFLAGS) $< -o $(EXECUTABLE)
-	$(OBJDUMP) -d test > asm.s
-	$(SIZE) test
+	$(OBJDUMP) -d $(EXECUTABLE) > asm.s
+	$(SIZE) $(EXECUTABLE)
 
 clean:
-	rm $(EXECUTABLE)
+	rm $(EXECUTABLE) -f

@@ -2,7 +2,7 @@
 // Copyright 2017 Thomas Wendtland
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use this file except in compliance with \the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -13,25 +13,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "devices/nrf52/inc/Gpio.hpp"
+#pragma once
 
-/*
+namespace granary {
+    enum class GpioType {
+        Output,
+        Input,
+        PeripheralFunction,
+        Analog
+    };
 
+    enum class GpioPullType {
+        NoPull,
+        PullDown,
+        PullUp
+    };
 
-*/
-
-using namespace granary;
-
-static constexpr auto LedConfig = makeGpioConfig();
-using LedGreen = Gpio<nrf52::P0, 3>;
-
-int main(int argc, char** argv){
-
-    // constexpr auto test = GpioConfig.get<GpioType>();
-    // *((uint32_t*)0x20003000) = (uint32_t)test;
-
-    LedGreen::init(LedConfig);
-    LedGreen::set();
-    LedGreen::clear();
-    return 34;
+    enum class GpioDriveType {
+        Sos,
+        Hos,
+        Soh,
+        Hoh,
+        Dos,
+        Doh,
+        Sod,
+        Hod
+    };
 }

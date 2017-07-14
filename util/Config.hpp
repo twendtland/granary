@@ -17,7 +17,6 @@
     Struct Config allows for compile time creation of configurations for peripherals,
     but all values used MUST be of different type. They can be returned with 'get'
     by choosing the type to get.
-
 */
 
 #pragma once
@@ -30,20 +29,42 @@
 namespace granary {
 
     template<typename Values, typename Defaults>
-    struct Config {
+    class Config {
+        public:
+            static_assert(std::tuple_size<Defaults>::value > 0, "Config error: No defaults provided.");
 
-        Values values {};      //
-        Defaults defaults {};  // these are std::tuples
+            Values values {};      //
+            Defaults defaults {};  // these have to be std::tuples
 
-        template<typename T>
-        constexpr auto get() const {
-            if (Util::has_type<T, Values>::value == true){
-                return std::get<T>(values);
+            template<typename T>
+            auto constexpr get() const {
+                Container<Values, Defaults, Util::has_type<T, Values>::value> container{values, defaults};
+                return container.get<T>();
             }
-            else {
-                return std::get<T>(defaults);
-            }
-        }
+
+        private:
+            template<typename V, typename D, bool Contained>
+            struct Container;
+
+            template<typename V, typename D>
+            struct Container<V, D, false> {
+                V values;
+                D defaults;
+                template<typename T>
+                constexpr auto get() const {
+                    return std::get<T>(defaults);
+                }
+            };
+
+            template<typename V, typename D>
+            struct Container<V, D, true> {
+                V values;
+                D defaults;
+                template<typename T>
+                constexpr auto get() const {
+                    return std::get<T>(values);
+                }
+            };
     };
 
     template<typename Values, typename Defaults>

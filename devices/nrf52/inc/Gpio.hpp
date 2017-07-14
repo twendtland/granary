@@ -18,43 +18,65 @@
 #include <cstdint>
 #include "nrf52_gpio.hpp"
 #include "Config.hpp"
+#include "GpioTypes.hpp"
 
 namespace granary {
 
     template<typename ... Values>
     constexpr auto makeGpioConfig(Values ... values){
-        std::tuple<int, float> defaults;
+        std::tuple<GpioType, GpioPullType> defaults {GpioType::Output, GpioPullType::NoPull};
         return makeConfig(std::tuple<Values...>{values...}, defaults);
     }
 
     template<typename Port, std::uint32_t Pin, bool Inverted = false>
     class Gpio {
         public:
-            void init();
-            void set();
-            void clear();
+            template<typename Conf>
+            static void init(const Conf config);
+            static constexpr void set();
+            static constexpr void clear();
+            static constexpr void toggle();
     };
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
-void granary::Gpio<Port, Pin, Inverted>::init(){
-
+template<typename Conf>
+void granary::Gpio<Port, Pin, Inverted>::init(const Conf config){
+     auto type = config.template get<GpioType>();
+     if (type == GpioType::Output){
+         Port::template Pin_Cnf<Pin>::Dir::set();
+         Port::template Pin_Cnf<Pin>::Input::set();
+         Port::template Pin_Cnf<Pin>::Drive::write(static_cast<std::uint8_t>(GpioDriveType::Sos));
+         Port::template Pin_Cnf<Pin>::Sense::write(std::uint8_t{0});
+     }
+     auto pulltype = config.template get<GpioPullType>();
+     Port::template Pin_Cnf<Pin>::Pull::write(static_cast<std::uint8_t>(pulltype));
+     //clear();
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
-void granary::Gpio<Port, Pin, Inverted>::set(){
-
+constexpr void granary::Gpio<Port, Pin, Inverted>::set(){
+    Port::Outset::Pins::write(std::uint32_t{1<<Pin});
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
-void granary::Gpio<Port, Pin, Inverted>::clear(){
-
+constexpr void granary::Gpio<Port, Pin, Inverted>::clear(){
+    Port::Outclr::Pins::write(std::uint32_t{1<<Pin});
 }
 
 // -----------------------------------------------------------------------------
+
+template<typename Port, std::uint32_t Pin, bool Inverted>
+constexpr void granary::Gpio<Port, Pin, Inverted>::toggle(){
+    if (Port::Out::Pins::read() & (1<<Pin)){
+        clear();
+        return;
+    }
+    set();
+}
