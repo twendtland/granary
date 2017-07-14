@@ -17,16 +17,18 @@
 
 /*
 
-    To be compiled for and run on the host system to check if writes are
-    returning the correct result.
 
 */
 
-using namespace rye;
+using namespace granary;
+
+static constexpr auto GpioConfig = makeGpioConfig(3);
 
 int main(int argc, char** argv){
 
+    constexpr int test = GpioConfig.get<int>();
 
+    *((volatile uint32_t*)0x20003000) = test;
 
     return 0;
 }

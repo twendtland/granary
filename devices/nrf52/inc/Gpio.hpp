@@ -17,14 +17,15 @@
 
 #include <cstdint>
 #include "nrf52_gpio.hpp"
+#include "Config.hpp"
 
 namespace granary {
 
     template<typename ... Values>
-    constexpr auto makeGPioConfig(Values ... values){
-
+    constexpr auto makeGpioConfig(Values ... values){
+        std::tuple<int, float> defaults;
+        return makeConfig(std::tuple<Values...>{values...}, defaults);
     }
-
 
     template<typename Port, std::uint32_t Pin, bool Inverted = false>
     class Gpio {
@@ -38,7 +39,21 @@ namespace granary {
 // -----------------------------------------------------------------------------
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
+void granary::Gpio<Port, Pin, Inverted>::init(){
+
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename Port, std::uint32_t Pin, bool Inverted>
 void granary::Gpio<Port, Pin, Inverted>::set(){
+
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename Port, std::uint32_t Pin, bool Inverted>
+void granary::Gpio<Port, Pin, Inverted>::clear(){
 
 }
 
