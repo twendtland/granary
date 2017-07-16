@@ -53,21 +53,31 @@ void granary::Gpio<Port, Pin, Inverted>::init(const Conf config){
      }
      auto pulltype = config.template get<GpioPullType>();
      Port::template Pin_Cnf<Pin>::Pull::write(static_cast<std::uint8_t>(pulltype));
-     //clear();
+     clear();
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
 constexpr void granary::Gpio<Port, Pin, Inverted>::set(){
-    Port::Outset::Pins::write(std::uint32_t{1<<Pin});
+    if (Inverted == false){
+        Port::Outset::Pins::write(std::uint32_t{1<<Pin});
+    }
+    else {
+        Port::Outclr::Pins::write(std::uint32_t{1<<Pin});
+    }
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
 constexpr void granary::Gpio<Port, Pin, Inverted>::clear(){
-    Port::Outclr::Pins::write(std::uint32_t{1<<Pin});
+    if (Inverted == false){
+        Port::Outclr::Pins::write(std::uint32_t{1<<Pin});
+    }
+    else {
+        Port::Outset::Pins::write(std::uint32_t{1<<Pin});
+    }
 }
 
 // -----------------------------------------------------------------------------

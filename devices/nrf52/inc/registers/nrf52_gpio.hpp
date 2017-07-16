@@ -89,7 +89,7 @@ namespace nrf52 {
 		struct Outclr {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x50c;
-            using Pins = Bitfield<Outset, std::uint32_t, 0, 32, AccessType::ReadWrite>;
+            using Pins = Bitfield<Outclr, std::uint32_t, 0, 32, AccessType::ReadWrite>;
 
 			using Pin0 = Bitfield<Outclr, bool, 0, 1, AccessType::ReadWrite>;
 			using Pin1 = Bitfield<Outclr, bool, 1, 1, AccessType::ReadWrite>;
