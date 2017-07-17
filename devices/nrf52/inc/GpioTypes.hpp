@@ -30,7 +30,7 @@ namespace granary {
     };
 
     enum class GpioDriveType {
-        Sos,
+        S0S1,
         Hos,
         Soh,
         Hoh,

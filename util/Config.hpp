@@ -37,17 +37,19 @@ namespace granary {
             Defaults defaults {};  // these have to be std::tuples
 
             template<typename T>
-            auto constexpr get() const {
-                Container<Values, Defaults, Util::has_type<T, Values>::value> container{values, defaults};
-                return container.get<T>();
+            constexpr auto get() const {
+                Proxy<Values, Defaults, Util::HasType<T, Values>::value> proxy{values, defaults};
+                return proxy.get<T>();
             }
 
         private:
+            // class wrapper using template specialization to select
+            // the 'correct' tuple
             template<typename V, typename D, bool Contained>
-            struct Container;
+            struct Proxy;
 
             template<typename V, typename D>
-            struct Container<V, D, false> {
+            struct Proxy<V, D, false> {
                 V values;
                 D defaults;
                 template<typename T>
@@ -57,7 +59,7 @@ namespace granary {
             };
 
             template<typename V, typename D>
-            struct Container<V, D, true> {
+            struct Proxy<V, D, true> {
                 V values;
                 D defaults;
                 template<typename T>

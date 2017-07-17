@@ -48,7 +48,7 @@ void granary::Gpio<Port, Pin, Inverted>::init(const Conf config){
      if (type == GpioType::Output){
          Port::template Pin_Cnf<Pin>::Dir::set();
          Port::template Pin_Cnf<Pin>::Input::set();
-         Port::template Pin_Cnf<Pin>::Drive::write(static_cast<std::uint8_t>(GpioDriveType::Sos));
+         Port::template Pin_Cnf<Pin>::Drive::write(static_cast<std::uint8_t>(GpioDriveType::S0S1));
          Port::template Pin_Cnf<Pin>::Sense::write(std::uint8_t{0});
      }
      auto pulltype = config.template get<GpioPullType>();

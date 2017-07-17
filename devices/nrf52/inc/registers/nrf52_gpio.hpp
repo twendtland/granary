@@ -319,41 +319,6 @@ namespace nrf52 {
 			using Drive = Bitfield<Pin_Cnf, std::uint8_t, 8, 3, AccessType::ReadWrite>;
 			using Sense = Bitfield<Pin_Cnf, std::uint8_t, 16, 2, AccessType::ReadWrite>;
 		};
-
-        // using Pins_Cnfs = std::tuple<
-        //     Pin_Cnf<0>,
-        //     Pin_Cnf<1>,
-        //     Pin_Cnf<2>,
-        //     Pin_Cnf<3>,
-        //     Pin_Cnf<4>,
-        //     Pin_Cnf<5>,
-        //     Pin_Cnf<6>,
-        //     Pin_Cnf<7>,
-        //     Pin_Cnf<8>,
-        //     Pin_Cnf<9>,
-        //     Pin_Cnf<10>,
-        //     Pin_Cnf<11>,
-        //     Pin_Cnf<12>,
-        //     Pin_Cnf<13>,
-        //     Pin_Cnf<14>,
-        //     Pin_Cnf<15>,
-        //     Pin_Cnf<16>,
-        //     Pin_Cnf<17>,
-        //     Pin_Cnf<18>,
-        //     Pin_Cnf<19>,
-        //     Pin_Cnf<20>,
-        //     Pin_Cnf<21>,
-        //     Pin_Cnf<22>,
-        //     Pin_Cnf<23>,
-        //     Pin_Cnf<24>,
-        //     Pin_Cnf<25>,
-        //     Pin_Cnf<26>,
-        //     Pin_Cnf<27>,
-        //     Pin_Cnf<28>,
-        //     Pin_Cnf<29>,
-        //     Pin_Cnf<30>,
-        //     Pin_Cnf<31>
-        // >;
 	};
 
 	using P0 = PinController<0X50000000, 0xFF>;
