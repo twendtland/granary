@@ -22,21 +22,24 @@
 
 namespace granary {
 
-    template<typename ... Values>
-    constexpr auto makeGpioConfig(Values ... values){
-        std::tuple<GpioType, GpioPullType> defaults {GpioType::Output, GpioPullType::NoPull};
-        return makeConfig(std::tuple<Values...>{values...}, defaults);
-    }
-
     template<typename Port, std::uint32_t Pin, bool Inverted = false>
     class Gpio {
         public:
             template<typename Conf>
             static void init(const Conf config);
+            static void deInit();
+
             static constexpr void set();
             static constexpr void clear();
             static constexpr void toggle();
     };
+
+    // values not provided fall back to defaults
+    template<typename ... Values>
+    constexpr auto makeGpioConfig(Values ... values){
+        std::tuple<GpioType, GpioPullType> defaults {GpioType::Output, GpioPullType::NoPull};
+        return makeConfig(std::tuple<Values...>{values...}, defaults);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -84,9 +87,10 @@ constexpr void granary::Gpio<Port, Pin, Inverted>::clear(){
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
 constexpr void granary::Gpio<Port, Pin, Inverted>::toggle(){
-    if (Port::Out::Pins::read() & (1<<Pin)){
-        clear();
-        return;
+    if (Port::Outset::Pins::read() & (1<<Pin)){
+        set();
     }
-    set();
+    else {
+        clear();
+    }
 }

@@ -20,18 +20,5 @@ namespace Util {
     constexpr void for_each_impl(Param p, T t){
 
     }
-
-    template<typename Param, typename T, typename ... Ts>
-    constexpr void for_each_impl(Param p, T t, Ts ... ts){
-        for_each_impl(p, ts...);
-    }
-
-    template<typename Param, typename T>
-    constexpr void for_each(Param p, T t){
-        constexpr size_t size = std::tuple_size<T>::value;
-        using i = std::make_index_sequence<size>;
-        //T::init(p);
-        for_each_impl(p, std::get<i>(t));
-    }
 }
 }

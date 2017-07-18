@@ -31,12 +31,12 @@ namespace granary {
 
     enum class GpioDriveType {
         S0S1,
-        Hos,
-        Soh,
-        Hoh,
-        Dos,
-        Doh,
-        Sod,
-        Hod
+        H0S1,
+        S0H1,
+        H0H1,
+        D0S1,
+        D0H1,
+        S0D1,
+        H0D1
     };
 }

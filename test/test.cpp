@@ -21,26 +21,15 @@ using namespace granary;
 static constexpr auto LedConfig = makeGpioConfig();
 using LedGreen = Gpio<nrf52::P0, 3>;
 
-struct Test {
-    template<typename Config>
-    static void init(Config c){
-        volatile uint32_t* test = ((volatile uint32_t*)0x20003000);
-        *test = (int)c;
-    }
-};
-
-struct Pin1 {};
-struct Pin2 {};
-
-constexpr auto foo = std::tuple<Pin1, Pin2>{};
+using Spi1 = Spi<int>; // dummy
+static constexpr auto SpiConfig = makeSpiConfig(SpiMode{45});
 
 int main(int argc, char** argv){
 
     // constexpr auto test = GpioConfig.get<GpioType>();
     // *((uint32_t*)0x20003000) = (uint32_t)test;
 
-    Util::for_each(LedConfig, foo);
-
+    Spi1::init(SpiConfig);
     // LedGreen::init(LedConfig);
     // LedGreen::set();
     // LedGreen::clear();
