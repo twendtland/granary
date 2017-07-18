@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Config.hpp"
+#include "nrf52_spi.hpp"
 
 namespace granary {
 
@@ -15,8 +16,6 @@ namespace granary {
     template<typename Instance, typename ... Pins>
     class Spi {
         public:
-
-
             template<typename Config>
             static constexpr void init(const Config& c);
     };
@@ -27,6 +26,8 @@ namespace granary {
         return makeConfig(std::tuple<Values...>{values...}, defaults);
     }
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename Instance, typename ... Pins>
 template<typename Config>
