@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace granary {
 namespace Util {
 
@@ -16,9 +18,37 @@ namespace Util {
     template <typename T, typename... Ts>
     struct HasType<T, std::tuple<T, Ts...>> : std::true_type {};
 
-    template<typename Param, typename T>
-    constexpr void for_each_impl(Param p, T t){
 
+    template<typename T>
+    constexpr bool has_type(){
+        return false;
+    }
+
+    template<typename T, typename U, typename ... Us>
+    constexpr bool has_type(){
+        if (std::is_same<T, U>::value){
+            return true;
+        }
+        else {
+            return has_type<T, Us...>();
+        }
+    }
+
+
+    // check if one tuple contains types not in the other
+    template<typename Tuple>
+    constexpr bool has_all_types(std::tuple<>){
+        return true;
+    }
+
+    template<typename Tuple, typename T>
+    constexpr bool has_all_types(std::tuple<T>){
+        return HasType<T, Tuple>::value;
+    }
+
+    template<typename Tuple, typename T, typename ... Ts>
+    constexpr bool has_all_types(std::tuple<T, Ts...>){
+        return HasType<T, Tuple>::value && has_all_types<Tuple>(std::tuple<Ts...>{});
     }
 }
 }

@@ -19,15 +19,15 @@
 static constexpr auto LedConfig = granary::makeGpioConfig();
 using LedGreen = granary::Gpio<nrf52::P0, 3>;
 
-// using Spi1 = granary::Spi<int>; // dummy
-// static constexpr auto SpiConfig = granary::makeSpiConfig(SpiMode{45});
+using Spi1 = granary::Spi<nrf52::Spi0>; // dummy
+static constexpr auto SpiConfig = granary::makeSpiConfig();
 
 int main(int argc, char** argv){
 
     // constexpr auto test = GpioConfig.get<GpioType>();
     // *((uint32_t*)0x20003000) = (uint32_t)test;
 
-    //Spi1::init(SpiConfig);
+    Spi1::init(SpiConfig);
     // LedGreen::init(LedConfig);
     // LedGreen::set();
     // LedGreen::clear();

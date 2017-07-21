@@ -31,6 +31,7 @@ namespace granary {
     template<typename Values, typename Defaults>
     class Config {
         public:
+            static_assert(Util::has_all_types<Defaults>(Values{}), "Config: type/value not in defaults");
             static_assert(std::tuple_size<Defaults>::value > 0, "Config error: No defaults provided.");
 
             Values values {};      //
@@ -38,7 +39,7 @@ namespace granary {
 
             template<typename T>
             constexpr auto get() const {
-                Proxy<Values, Defaults, Util::HasType<T, Values>::value> proxy{values, defaults};
+                Proxy<Values, Defaults, Util::has_type<T, Values>()> proxy{values, defaults};
                 return proxy.get<T>();
             }
 
