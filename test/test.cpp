@@ -19,14 +19,18 @@
 static constexpr auto LedConfig = granary::makeGpioConfig();
 using LedGreen = granary::Gpio<nrf52::P0, 3>;
 
-using Spi1 = granary::Spi<nrf52::Spi0>; // dummy
-static constexpr auto SpiConfig = granary::makeSpiConfig();
+using SdaPin = granary::Gpio<nrf52::P0, 16>;
+using SdlPin = granary::Gpio<nrf52::P0, 17>;
+using Spi1 = granary::Spi<nrf52::Spi0, SdaPin, SdlPin>; // dummy
+static constexpr auto SpiConfig = granary::makeSpiConfig(granary::SpiFrequency{nrf52::Spi::FrequencyType::K125});
+
+using test = std::tuple<int>;
 
 int main(int argc, char** argv){
 
     // constexpr auto test = GpioConfig.get<GpioType>();
     // *((uint32_t*)0x20003000) = (uint32_t)test;
-
+    //if(granary::has_type<)
     Spi1::init(SpiConfig);
     // LedGreen::init(LedConfig);
     // LedGreen::set();

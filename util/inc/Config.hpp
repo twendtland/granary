@@ -39,7 +39,7 @@ namespace granary {
 
             template<typename T>
             constexpr auto get() const {
-                Proxy<Values, Defaults, Util::has_type<T, Values>()> proxy{values, defaults};
+                Proxy<Values, Defaults, Util::has_type<T>(Values{})> proxy{values, defaults};
                 return proxy.get<T>();
             }
 
