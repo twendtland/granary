@@ -34,7 +34,6 @@ namespace granary {
             static constexpr void toggle();
     };
 
-    // values not provided fall back to defaults
     template<typename ... Values>
     constexpr auto makeGpioConfig(Values ... values){
         std::tuple<GpioType, GpioPullType> defaults {GpioType::Output, GpioPullType::NoPull};

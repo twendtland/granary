@@ -14,10 +14,7 @@ INCLUDES += -I$(INCDIR) -I../../rye/inc -I../ -I../util/inc -I../devices/nrf52/i
 
 CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 -nostdlib -mcpu=cortex-m3 -mthumb
 
-$(EXECUTABLE): $(EXECUTABLE).cpp
-	$(CC) $(CFLAGS) $< -o $(EXECUTABLE)
-	$(OBJDUMP) -d $(EXECUTABLE) > asm.s
-	$(SIZE) $(EXECUTABLE)
+all:
 
 clean:
 	rm $(EXECUTABLE) -f

@@ -13,27 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "devices/nrf52/inc/Gpio.hpp"
-//#include "devices/nrf52/inc/Spi.hpp"
+#include "Gpio.hpp"
+#include "Uart.hpp"
 
 static constexpr auto LedConfig = granary::makeGpioConfig();
 using LedGreen = granary::Gpio<nrf52::P0, 3>;
-//
-// using SdaPin = granary::Gpio<nrf52::P0, 16>;
-// using SdlPin = granary::Gpio<nrf52::P0, 17>;
-// using Spi1 = granary::Spi<nrf52::Spi0, SdaPin, SdlPin>; // dummy
-// static constexpr auto SpiConfig = granary::makeSpiConfig(granary::SpiFrequency{nrf52::Spi::FrequencyType::K125});
+
+//using device = nrf52;
+
+using TxPin = granary::Gpio<nrf52::P0, 16>;
+using RxPin = granary::Gpio<nrf52::P0, 17>;
+using Uart0 = granary::Uart<nrf52::Uart0, TxPin, RxPin>; // dummy
+//static constexpr auto SpiConfig = granary::makeSpiConfig(granary::SpiFrequency{nrf52::Spi::FrequencyType::K125});
 
 using test = std::tuple<int>;
 
 int main(int argc, char** argv){
 
-    // constexpr auto test = GpioConfig.get<GpioType>();
-    // *((uint32_t*)0x20003000) = (uint32_t)test;
-    //if(granary::has_type<)
-    //Spi1::init(SpiConfig);
-    // LedGreen::init(LedConfig);
-    // LedGreen::set();
-    // LedGreen::clear();
     return 0;
 }

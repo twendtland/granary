@@ -50,49 +50,49 @@ namespace Spi {
 		struct Events_Ready {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x108;
-			using Value = Bitfield<Events_Ready, std::uint32_t, 0, 32, AccessType::ReadWrite>;
+			using Value = Bitfield<Events_Ready, std::uint32_t, 0, 32, Access::ReadWrite>;
 		};
 		struct Intenset {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x304;
-			using Ready = Bitfield<Intenset, ReadyType, 2, 1, AccessType::ReadWrite>;
+			using Ready = Bitfield<Intenset, ReadyType, 2, 1, Access::ReadWrite>;
 		};
 		struct Intenclr {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x308;
-			using Ready = Bitfield<Intenclr, ReadyType, 2, 1, AccessType::ReadWrite>;
+			using Ready = Bitfield<Intenclr, ReadyType, 2, 1, Access::ReadWrite>;
 		};
 		struct Enable {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x500;
-			using Value = Bitfield<Enable, EnableType, 0, 4, AccessType::ReadWrite>;
+			using Value = Bitfield<Enable, EnableType, 0, 4, Access::ReadWrite>;
 		};
 		struct Psel {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x508;
-			using Value = Bitfield<Psel, std::uint32_t, 0, 32, AccessType::ReadWrite>;
+			using Value = Bitfield<Psel, std::uint32_t, 0, 32, Access::ReadWrite>;
 		};
 		struct Rxd {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x518;
-			using Value = Bitfield<Rxd, std::uint8_t, 0, 8, AccessType::ReadWrite>;
+			using Value = Bitfield<Rxd, std::uint8_t, 0, 8, Access::ReadWrite>;
 		};
 		struct Txd {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x51c;
-			using Value = Bitfield<Txd, std::uint8_t, 0, 8, AccessType::ReadWrite>;
+			using Value = Bitfield<Txd, std::uint8_t, 0, 8, Access::ReadWrite>;
 		};
 		struct Frequency {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x524;
-			using Value = Bitfield<Frequency, FrequencyType, 0, 32, AccessType::ReadWrite>;
+			using Value = Bitfield<Frequency, FrequencyType, 0, 32, Access::ReadWrite>;
 		};
 		struct Config {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x554;
-			using Order = Bitfield<Config, OrderType, 0, 1, AccessType::ReadWrite>;
-			using Cpha = Bitfield<Config, CphaType, 1, 1, AccessType::ReadWrite>;
-			using Cpol = Bitfield<Config, CpolType, 2, 1, AccessType::ReadWrite>;
+			using Order = Bitfield<Config, OrderType, 0, 1, Access::ReadWrite>;
+			using Cpha = Bitfield<Config, CphaType, 1, 1, Access::ReadWrite>;
+			using Cpol = Bitfield<Config, CpolType, 2, 1, Access::ReadWrite>;
 		};
 	};
 
