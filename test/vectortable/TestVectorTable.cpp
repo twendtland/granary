@@ -13,21 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gpio.hpp"
-#include "Uart.hpp"
+#include "VectorTable.hpp"
 
-static constexpr auto LedConfig = granary::makeGpioConfig();
-using LedGreen = granary::Gpio<nrf52::P0, 3>;
+void ResetHandler(){
+    for(;;){}
+}
 
-//using device = nrf52;
+void UsbHandler(){
+    for(;;){}
+}
+void UartHandler(){
+    for(;;){}
+}
 
-using TxPin = granary::Gpio<nrf52::P0, 16>;
-using RxPin = granary::Gpio<nrf52::P0, 17>;
-using Uart0 = granary::Uart<nrf52::Uart0, TxPin, RxPin>; // dummy
-//static constexpr auto SpiConfig = granary::makeSpiConfig(granary::SpiFrequency{nrf52::Spi::FrequencyType::K125});
-
-
+__attribute__((section(".isr_vector")))
+auto isr = granary::makeVectorTable<12>(0x20003000, granary::InterruptHandler{0, ResetHandler}, granary::InterruptHandler{2, UsbHandler});
 
 int main(int argc, char** argv){
+
     return 0;
 }
