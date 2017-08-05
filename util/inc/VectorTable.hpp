@@ -4,52 +4,63 @@
 #include <cstdint>
 #include <tuple>
 
+/*
+    TODO: - improve performance
+          -
+*/
+
+// to be implemented in application
+void DefaultHandler();
+
 namespace granary {
     using HandlerFunction = void(*)();
 
-    struct InterruptHandler {
-        constexpr InterruptHandler(std::uint32_t pos, HandlerFunction func) : position{pos}, function{func}{}
-        std::uint32_t position;
-        HandlerFunction function;
-    };
+    namespace detail {
+        struct InterruptVector{
+            constexpr InterruptVector(std::uint32_t n, HandlerFunction func) : number{n}, function{func}{}
+            std::uint32_t number;
+            HandlerFunction function;
+        };
 
-    void DefaultHandler(){
-        for(;;){}
+        template<std::uint32_t N>
+        constexpr auto elemForPos(){
+            return DefaultHandler;
+        }
+
+        template<std::uint32_t N, typename T, typename ... Ts>
+        constexpr auto elemForPos(T t, Ts ... ts){
+            if (t.number == N){
+                return t.function;
+            }
+            return elemForPos<N>(ts...);
+        }
+
+        template<std::uint32_t Size>
+        struct VectorTable {
+            static constexpr auto Index = Size-1;
+            template<typename ... Ts>
+            static constexpr auto make(Ts ... ts){
+                return std::tuple_cat(std::make_tuple(elemForPos<Index>(ts...)), VectorTable<Index>::make(ts...));
+            }
+        };
+
+        template<>
+        struct VectorTable<1> {
+            template<typename ... Ts>
+            static constexpr auto make(Ts ... ts){
+                return std::make_tuple(elemForPos<0>(ts...));
+            }
+        };
     }
 
-    template<std::uint32_t P>
-    constexpr auto elemForPos(){
-        return DefaultHandler;
+    template<typename T>
+    auto constexpr makeVector(T t, HandlerFunction func){
+        return detail::InterruptVector{t,func};
     }
-
-    template<std::uint32_t P, typename T, typename ... Ts>
-    constexpr auto elemForPos(T t, Ts ... ts){
-        if (t.position == P){
-            return t.function;
-        }
-        return elemForPos<P>(ts...);
-    }
-
-    template<std::uint32_t Size>
-    struct VectorTable {
-        static constexpr auto Index = Size;
-        template<typename ... Ts>
-        static constexpr auto make(Ts ... ts){
-            return std::tuple_cat(std::make_tuple(elemForPos<Index-1>(ts...)), VectorTable<Index-1>::make(ts...));
-        }
-    };
-
-    template<>
-    struct VectorTable<1> {
-        template<typename ... Ts>
-        static constexpr auto make(Ts ... ts){
-            return std::make_tuple(elemForPos<0>(ts...));
-        }
-    };
 
     template<std::uint32_t Size, typename T, typename ... Ts>
     constexpr auto makeVectorTable(T stacktop, Ts ... ts){
         static_assert(sizeof...(Ts)<=Size, "VectorTable: too many elements for given size");
-        return std::tuple_cat(VectorTable<Size>::make(ts...), std::make_tuple(stacktop));
+        return std::tuple_cat(detail::VectorTable<Size-1>::make(ts...), std::make_tuple(stacktop));
     }
 }
