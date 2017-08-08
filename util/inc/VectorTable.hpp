@@ -5,8 +5,7 @@
 #include <tuple>
 
 /*
-    TODO: - improve performance
-          -
+    TODO: 
 */
 
 // to be implemented in application
@@ -40,7 +39,7 @@ namespace granary {
             static constexpr auto Index = Size-1;
             template<typename ... Ts>
             static constexpr auto make(Ts ... ts){
-                return std::tuple_cat(std::make_tuple(elemForPos<Index>(ts...)), VectorTable<Index>::make(ts...));
+                return std::make_tuple(std::make_tuple(elemForPos<Index>(ts...)), VectorTable<Index>::make(ts...));
             }
         };
 
@@ -63,4 +62,5 @@ namespace granary {
         static_assert(sizeof...(Ts)<=Size, "VectorTable: too many elements for given size");
         return std::tuple_cat(detail::VectorTable<Size-1>::make(ts...), std::make_tuple(stacktop));
     }
+
 }
