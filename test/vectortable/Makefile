@@ -6,7 +6,7 @@ DEVICE=nrf52
 SRCDIR = .
 INCDIR = ./../../devices/$(DEVICE)/inc
 
-CCPATH = /opt/gcc6-arm-none-eabi/bin
+CCPATH = /gcc/bin
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump

@@ -32,7 +32,7 @@ void DefaultHandler(){
 
 // check assembly output in asm.s to verify tables correctness
 __attribute__((section(".isr_vector")))
-constexpr auto isr = granary::makeVectorTable<12>(0x20003000, granary::makeVector(0, ResetHandler), granary::makeVector(11, UsbHandler));
+auto isr = granary::makeVectorTable<48>(0x20003000, granary::makeVector(0, ResetHandler), granary::makeVector(3, UsbHandler));
 
 int main(int argc, char** argv){
 

@@ -5,7 +5,7 @@
 #include <tuple>
 
 /*
-    TODO: 
+    TODO:
 */
 
 // to be implemented in application

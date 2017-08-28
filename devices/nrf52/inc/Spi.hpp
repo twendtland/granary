@@ -28,6 +28,12 @@ namespace granary {
         nrf52::Spi::FrequencyType value;
     };
 
+    template<typename ... Values>
+    static constexpr auto makeSpiConfig(Values ... values){
+        constexpr auto defaults = std::make_tuple(SpiMode{56}, SpiFrequency{nrf52::Spi::FrequencyType::K125});
+        return makeConfig(std::tuple<Values...>{values...}, defaults);
+    }
+
     template<typename Instance, typename ... Pins>
     class Spi {
         static constexpr auto  PinConfig = makeGpioConfig();
@@ -35,12 +41,6 @@ namespace granary {
             template<typename Config>
             static constexpr void init(const Config& c);
     };
-
-    template<typename ... Values>
-    static constexpr auto makeSpiConfig(Values ... values){
-        constexpr auto defaults = std::make_tuple(SpiMode{56}, SpiFrequency{nrf52::Spi::FrequencyType::K125});
-        return makeConfig(std::tuple<Values...>{values...}, defaults);
-    }
 }
 
 // -----------------------------------------------------------------------------

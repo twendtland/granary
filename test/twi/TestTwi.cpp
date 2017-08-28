@@ -14,21 +14,19 @@
 // limitations under the License.
 
 #include "Gpio.hpp"
-#include "Uart.hpp"
+#include "Twi.hpp"
 
 namespace device = nrf52;
 
 static constexpr auto LedConfig = granary::makeGpioConfig();
 using LedGreen = granary::Gpio<device::P0, 3>;
 
-using TxPin = granary::Gpio<device::P0, 16>;
-using RxPin = granary::Gpio<device::P0, 17>;
-using Uart0 = granary::Uart<device::Uart0, TxPin, RxPin, granary::Pin::NotConnected, granary::Pin::NotConnected>;
-static constexpr auto UartConfig = granary::makeUartConfig();
+using SclPin = granary::Gpio<device::P0, 16>;
+using SdaPin = granary::Gpio<device::P0, 17>;
 
 // -----------------------------------------------------------------------------
 
 int main(int argc, char** argv){
-    Uart0::init(UartConfig);
+
     return 0;
 }

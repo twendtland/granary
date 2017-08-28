@@ -1,5 +1,5 @@
 
-EXECUTABLE = TestUart
+EXECUTABLE = TestTwi
 
 DEVICE=nrf52
 
