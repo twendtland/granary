@@ -57,6 +57,7 @@ namespace Gpio {
         	static constexpr WidthType Address = BaseAddress + 0x524;
         	using Value = Bitfield<Detectmode, bool, 0, 1, Access::ReadWrite>;
         };
+
         template<std::uint32_t Number>
 		struct Pin_Cnf {
 			using WidthType = std::uint32_t;

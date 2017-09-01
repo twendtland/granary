@@ -1,5 +1,5 @@
 
-EXECUTABLE = TestVectorTable
+EXECUTABLE = TestTimer
 
 DEVICE=nrf52
 
@@ -11,16 +11,16 @@ CCPATH = /opt/gcc6-arm-none-eabi/bin
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
 SIZE = $(CCPATH)/arm-none-eabi-size
-LINKERSCRIPT=linker.ld
 
 INCLUDES += -I$(INCDIR) -I../../../rye/inc -I../ -I../../util/inc -I../../devices/$(DEVICE)/inc/registers \
 
-CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 -nostdlib -mcpu=cortex-m3 -mthumb -T$(LINKERSCRIPT) -fno-exceptions
+CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 -nostdlib -mcpu=cortex-m3 -mthumb
 
 $(EXECUTABLE): $(EXECUTABLE).cpp
 	$(CC) $(CFLAGS) $< -o $(EXECUTABLE)
-	$(OBJDUMP) -d $(EXECUTABLE) -j.text -j.isr_vector > asm.s
+	$(OBJDUMP) -fd $(EXECUTABLE) > asm.s
 	$(SIZE) $(EXECUTABLE)
 
 clean:
 	rm -f $(EXECUTABLE)
+	rm -f asm.s

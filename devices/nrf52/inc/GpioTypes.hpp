@@ -16,6 +16,7 @@
 #pragma once
 
 namespace granary {
+
     enum class GpioType {
         Output,
         Input,
@@ -29,7 +30,7 @@ namespace granary {
         PullUp
     };
 
-    enum class GpioDriveType {
+    enum class GpioDrive {
         S0S1,
         H0S1,
         S0H1,
@@ -38,5 +39,11 @@ namespace granary {
         D0H1,
         S0D1,
         H0D1
+    };
+
+    enum class GpioSensing {
+        Disabled = 0,
+        SenseHigh = 2,
+        SenseLow = 3
     };
 }

@@ -136,10 +136,10 @@ namespace Twi {
 			static constexpr WidthType Address = BaseAddress + 0x524;
 			using Value = Bitfield<Frequency, FrequencyType, 0, 32, Access::ReadWrite>;
 		};
-		struct Address {
+		struct DeviceAddress {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x588;
-			using Value = Bitfield<Address, std::uint8_t, 0, 7, Access::ReadWrite>;
+			using Value = Bitfield<DeviceAddress, std::uint8_t, 0, 7, Access::ReadWrite>;
 		};
 	};
 

@@ -14,10 +14,12 @@ void DefaultHandler();
 namespace granary {
     using HandlerFunction = void(*)();
 
+    constexpr std::int32_t ResetVectorOffset = 15;
+
     namespace detail {
         struct InterruptVector{
-            constexpr InterruptVector(std::uint32_t n, HandlerFunction func) : number{n}, function{func}{}
-            std::uint32_t number;
+            constexpr InterruptVector(std::int32_t n, HandlerFunction func) : number{n + ResetVectorOffset}, function{func}{}
+            std::int32_t number;
             HandlerFunction function;
         };
 

@@ -14,23 +14,20 @@
 // limitations under the License.
 
 #include "Gpio.hpp"
-#include "TwiMaster.hpp"
+#include "Timer.hpp"
+
 
 namespace device = nrf52;
 
-static constexpr auto LedConfig = granary::makeGpioConfig();
-using LedGreen = granary::Gpio<device::P0, 3>;
+using PeriodicTimer = granary::Timer<nrf52::Timer0>;
 
-using SclPin = granary::Gpio<device::P0, 16>;
-using SdaPin = granary::Gpio<device::P0, 17>;
+void callback(const std::uint8_t channel){
 
-using EeepromTwi = granary::TwiMaster<device::Twi0, SclPin, SdaPin>;
-
-static constexpr auto TwiConfig = granary::makeTwiConfig();
+}
 
 // -----------------------------------------------------------------------------
 
 int main(int argc, char** argv){
-    EeepromTwi::init(TwiConfig);
+    PeriodicTimer::init(callback);
     return 0;
 }
