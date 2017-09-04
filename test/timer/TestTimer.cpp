@@ -15,19 +15,47 @@
 
 #include "Gpio.hpp"
 #include "Timer.hpp"
-
+#include "VectorTable.hpp"
+#include "nrf52.h"
 
 namespace device = nrf52;
 
 using PeriodicTimer = granary::Timer<nrf52::Timer0>;
+static constexpr auto PeriodTimerConfig = granary::makeTimerConfig();
 
-void callback(const std::uint8_t channel){
+extern "C" {
+    void __libc_init_array();
+}
+
+int main();
+
+// -----------------------------------------------------------------------------
+
+void handleTimeout(const std::uint8_t channel){
 
 }
 
 // -----------------------------------------------------------------------------
 
-int main(int argc, char** argv){
-    PeriodicTimer::init(callback);
-    return 0;
+void defaultHandler(){
+
+}
+
+// -----------------------------------------------------------------------------
+
+void handleReset(){
+    __libc_init_array();
+    main();
+}
+
+// -----------------------------------------------------------------------------
+
+__attribute__((section(".isr_vector"), used))
+constexpr auto isr = granary::makeVectorTable<48>(0x20003000, granary::makeVector(Reset_IRQn, handleReset), granary::makeVector(TIMER0_IRQn, PeriodicTimer::handleIrq));
+
+// -----------------------------------------------------------------------------
+
+int main(){
+    PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
+    for(;;);
 }

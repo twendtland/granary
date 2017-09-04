@@ -6,15 +6,20 @@ DEVICE=nrf52
 SRCDIR = .
 INCDIR = ./../../devices/$(DEVICE)/inc
 
-CCPATH = /opt/gcc6-arm-none-eabi/bin
+CCPATH = /gcc/bin
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
 SIZE = $(CCPATH)/arm-none-eabi-size
 
-INCLUDES += -I$(INCDIR) -I../../../rye/inc -I../ -I../../util/inc -I../../devices/$(DEVICE)/inc/registers \
+INCLUDES += -I$(INCDIR) -I../../../rye/inc -I../ -I../../util/inc -I../../devices/$(DEVICE)/inc/registers
+INCLUDES += -I../../cmsis/include  -I../../cmsis/
 
-CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 -nostdlib -mcpu=cortex-m3 -mthumb
+LDFLAGS += -mthumb -Tnrf52/nrf52.ld -specs=nano.specs -specs=nosys.specs -lc
+LDFLAGS += -mcpu=cortex-m4
+LDFLAGS += -Wl,--gc-sections
+
+CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 $(LDFLAGS) -fno-exceptions -fno-rtti
 
 $(EXECUTABLE): $(EXECUTABLE).cpp
 	$(CC) $(CFLAGS) $< -o $(EXECUTABLE)
