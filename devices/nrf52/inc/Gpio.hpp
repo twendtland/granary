@@ -55,7 +55,6 @@ namespace granary {
 template<typename Port, std::uint32_t Pin, bool Inverted>
 template<typename Conf>
 constexpr void granary::Gpio<Port, Pin, Inverted>::init(const Conf config){
-    //generic_init(config, Pin);
     auto type = config.template get<GpioType>();
     if (type == GpioType::Output){
         Port::template Pin_Cnf<Pin>::Dir::write(true);
@@ -73,30 +72,8 @@ constexpr void granary::Gpio<Port, Pin, Inverted>::init(const Conf config){
     Port::template Pin_Cnf<Pin>::Drive::write(static_cast<FieldType>(sense));
     auto pulltype = config.template get<GpioPullType>();
     Port::template Pin_Cnf<Pin>::Drive::write(static_cast<FieldType>(pulltype));
-}
 
-// -----------------------------------------------------------------------------
-
-template<typename Port, std::uint32_t Pin, bool Inverted>
-template<typename Conf>
-constexpr void granary::Gpio<Port, Pin, Inverted>::generic_init(const Conf config, const uint32_t pin){
-     auto type = config.template get<GpioType>();
-     if (type == GpioType::Output){
-         Port::Pin_Cnf_Test::Dir::write(true, pin);
-         Port::Pin_Cnf_Test::Input::write(true, pin); // disconnect
-         Port::Pin_Cnf_Test::Sense::write(std::uint8_t{0}, pin);
-     }
-     else if (type==GpioType::Input){
-          Port::Pin_Cnf_Test::Dir::write(false, pin);
-          Port::Pin_Cnf_Test::Input::write(false, pin); // connect
-     }
-     auto drive = config.template get<GpioDrive>();
-     using FieldType = uint8_t;
-     Port::Pin_Cnf_Test::Drive::write(static_cast<FieldType>(drive), pin);
-     auto sense = config.template get<GpioSensing>();
-     Port::Pin_Cnf_Test::Drive::write(static_cast<FieldType>(sense), pin);
-     auto pulltype = config.template get<GpioPullType>();
-     Port::Pin_Cnf_Test::Drive::write(static_cast<FieldType>(pulltype), pin);
+    clear();
 }
 
 // -----------------------------------------------------------------------------
