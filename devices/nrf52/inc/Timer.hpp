@@ -70,7 +70,7 @@ constexpr void granary::Timer<Instance>::init(const Config config, const IrqHand
     Instance::Prescaler::Value::write(prescaler);
 
     Instance::Events_Compare::Value::write(std::uint32_t{0});
-    Instance::Tasks_Stop::Value::write(std::uint32_t{1});
+    Instance::Tasks_Stop::Value::write(true);
 
     NVIC_EnableIRQ(TIMER0_IRQn);
 
@@ -86,15 +86,15 @@ void granary::Timer<Instance>::start(const std::uint32_t ms){
     // 16000000/sek
     //
     Instance::Cc::Value::write(std::uint32_t{32000000});
-    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: used channel
-    Instance::Tasks_Start::Value::write(std::uint32_t{1});
+    Instance::Intenset::Compare::write(true); // @todo: used channel
+    Instance::Tasks_Start::Value::write(true);
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
 void granary::Timer<Instance>::stop(){
-    Instance::Tasks_Stop::write(std::uint32_t{1});
+    Instance::Tasks_Stop::write(true);
     Instance::Intenclr::Compare::write(std::uint8_t{1});
 }
 

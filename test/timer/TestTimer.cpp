@@ -20,14 +20,14 @@
 
 namespace device = nrf52;
 
+using Led1 = granary::Gpio<device::P0, 17, true>;
+using Led2 = granary::Gpio<device::P0, 18, true>;
+
+static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
+
 using PeriodicTimer = granary::Timer<nrf52::Timer0>;
 static constexpr auto PeriodTimerConfig = granary::makeTimerConfig();
 
-extern "C" {
-    void __libc_init_array();
-}
-
-int main();
 
 // -----------------------------------------------------------------------------
 
@@ -43,8 +43,18 @@ void defaultHandler(){
 
 // -----------------------------------------------------------------------------
 
+int main(){
+    PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
+
+    Led1::init(LedConfig);
+    Led1::set();
+
+    for(;;);
+}
+
+// -----------------------------------------------------------------------------
+
 void handleReset(){
-    __libc_init_array();
     main();
 }
 
@@ -54,8 +64,3 @@ __attribute__((section(".isr_vector"), used))
 constexpr auto isr = granary::makeVectorTable<48>(0x20003000, granary::makeVector(Reset_IRQn, handleReset), granary::makeVector(TIMER0_IRQn, PeriodicTimer::handleIrq));
 
 // -----------------------------------------------------------------------------
-
-int main(){
-    PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
-    for(;;);
-}

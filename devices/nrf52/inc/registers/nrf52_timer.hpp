@@ -1,4 +1,18 @@
 
+// Copyright 2017 Thomas Wendtland
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with \the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #pragma once
 
 #include <cstdint>
@@ -38,17 +52,17 @@ namespace Timer {
 		struct Tasks_Start {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x000;
-			using Value = Bitfield<Tasks_Start, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Start, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Stop {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x004;
-			using Value = Bitfield<Tasks_Stop, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Stop, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Count {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x008;
-			using Value = Bitfield<Tasks_Count, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Count, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Clear {
 			using WidthType = std::uint32_t;
@@ -58,12 +72,12 @@ namespace Timer {
 		struct Tasks_Shutdown {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x010;
-			using Value = Bitfield<Tasks_Shutdown, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Shutdown, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Capture {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x040;
-			using Value = Bitfield<Tasks_Capture, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Capture, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Compare {
 			using WidthType = std::uint32_t;
