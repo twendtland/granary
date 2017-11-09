@@ -71,6 +71,7 @@ constexpr void granary::Timer<Instance>::init(const Config config, const IrqHand
 
     Instance::Events_Compare::Value::write(std::uint32_t{0});
     Instance::Tasks_Stop::Value::write(true);
+    Instance::Shorts::Compare0_Clear::set();
 
     NVIC_EnableIRQ(TIMER0_IRQn);
 
@@ -111,5 +112,5 @@ void granary::Timer<Instance>::reset(){
 template<typename Instance>
 void granary::Timer<Instance>::handleIrq(){
     callback(1);
-    //Instance::Events_Compare::Value::write(std::uint32_t{0});
+    Instance::Events_Compare::Value::write(std::uint32_t{0});
 }

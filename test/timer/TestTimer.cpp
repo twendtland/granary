@@ -16,6 +16,7 @@
 #include "Gpio.hpp"
 #include "Timer.hpp"
 #include "VectorTable.hpp"
+#include "Initialization.hpp"
 #include "nrf52.h"
 
 namespace device = nrf52;
@@ -28,6 +29,9 @@ static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
 using PeriodicTimer = granary::Timer<nrf52::Timer0>;
 static constexpr auto PeriodTimerConfig = granary::makeTimerConfig();
 
+
+uint32_t data = 0x55AA;
+uint32_t g = 45;
 
 // -----------------------------------------------------------------------------
 
@@ -45,7 +49,7 @@ void defaultHandler(){
 
 int main(){
     PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
-
+    volatile int i  = data +1 + g;
     Led1::init(LedConfig);
     Led1::set();
 
@@ -55,6 +59,8 @@ int main(){
 // -----------------------------------------------------------------------------
 
 void handleReset(){
+    //granary::DataSection::init();
+    granary::BssSection::init();
     main();
 }
 
