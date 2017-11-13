@@ -1,6 +1,6 @@
 
 ELF = TestTimer
-FORMAT = .bin
+FORMAT = .hex
 BINARY = $(addsuffix $(FORMAT), $(ELF))
 
 DEVICE=nrf52

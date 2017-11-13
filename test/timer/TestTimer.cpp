@@ -13,11 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "nrf52.h"
+
 #include "Gpio.hpp"
 #include "Timer.hpp"
 #include "VectorTable.hpp"
 #include "Initialization.hpp"
-#include "nrf52.h"
 
 namespace device = nrf52;
 
@@ -29,27 +30,22 @@ static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
 using PeriodicTimer = granary::Timer<nrf52::Timer0>;
 static constexpr auto PeriodTimerConfig = granary::makeTimerConfig();
 
-
-uint32_t data = 0x55AA;
-uint32_t g = 45;
-
 // -----------------------------------------------------------------------------
 
 void handleTimeout(const std::uint8_t channel){
-
+    Led1::toggle();
 }
 
 // -----------------------------------------------------------------------------
 
 void defaultHandler(){
-
 }
 
 // -----------------------------------------------------------------------------
 
 int main(){
     PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
-    volatile int i  = data +1 + g;
+    PeriodicTimer::start(500);
     Led1::init(LedConfig);
     Led1::set();
 
@@ -59,7 +55,7 @@ int main(){
 // -----------------------------------------------------------------------------
 
 void handleReset(){
-    //granary::DataSection::init();
+    granary::DataSection::init();
     granary::BssSection::init();
     main();
 }

@@ -87,7 +87,7 @@ void granary::Timer<Instance>::start(const std::uint32_t ms){
     // 16000000/sek
     //
     Instance::Cc::Value::write(std::uint32_t{32000000});
-    Instance::Intenset::Compare::write(true); // @todo: used channel
+    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: used channel
     Instance::Tasks_Start::Value::write(true);
 }
 
