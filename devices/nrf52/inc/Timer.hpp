@@ -19,6 +19,7 @@
 #include "Config.hpp"
 #include "Pins.hpp"
 #include "Callback.hpp"
+
 #include "nrf52_timer.hpp"
 
 #include "nrf52.h"
@@ -28,15 +29,14 @@ namespace granary {
     // TODO: only one channel used so far, compare only
 
     template<typename ... Values>
-    static constexpr auto makeTimerConfig(Values ... values){
+    constexpr auto makeTimerConfig(Values ... values){
         constexpr auto defaults = std::make_tuple(nrf52::Timer::ModeType::Timer, nrf52::Timer::BitmodeType::Bit32, std::uint8_t{0});
-        return makeConfig(std::tuple<Values...>{values...}, defaults);
+        return makeConfig(defaults, values...);
     }
-
-    using IrqHandler = Callback<void, std::uint8_t>;
 
     template<typename Instance>
     class Timer {
+        using IrqHandler = Callback<void, std::uint8_t>;
         static constexpr std::uint32_t BaseFrequency = 16000000;
         public:
             template<typename Config>
@@ -57,7 +57,7 @@ namespace granary {
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-granary::IrqHandler granary::Timer<Instance>::callback;
+typename granary::Timer<Instance>::IrqHandler granary::Timer<Instance>::callback;
 
 // -----------------------------------------------------------------------------
 

@@ -28,18 +28,18 @@
 
 namespace granary {
 
-    template<typename Values, typename Defaults>
+    template<typename Defaults, typename ... Values>
     class Config {
         public:
-            static_assert(Util::has_all_types<Defaults>(Values{}), "Config: type/value not in defaults");
+            static_assert(Util::has_all_types<Defaults>(std::tuple<Values...>{}), "Config: type/value not in defaults");
             static_assert(std::tuple_size<Defaults>::value > 0, "Config error: No defaults provided.");
 
-            Values values {};      //
             Defaults defaults {};  // these have to be std::tuples
+            std::tuple<Values...> values {};      //
 
             template<typename T>
             constexpr auto get() const {
-                Proxy<Values, Defaults, Util::has_type<T>(Values{})> proxy{values, defaults};
+                Proxy<std::tuple<Values...>, Defaults, Util::has_type<T>(std::tuple<Values...>{})> proxy{values, defaults};
                 return proxy.get<T>();
             }
 
@@ -70,8 +70,13 @@ namespace granary {
             };
     };
 
-    template<typename Values, typename Defaults>
-    constexpr auto makeConfig(Values values, Defaults defaults){
-        return Config<Values, Defaults>{values, defaults};
+    template<typename T, typename Config>
+    constexpr auto getParam(Config config){
+        return config.template get<T>();
+    }
+
+    template<typename Defaults, typename ... Values>
+    constexpr auto makeConfig(Defaults defaults, Values ... values){
+        return Config<Defaults, Values ...>{defaults, values...};
     }
 }

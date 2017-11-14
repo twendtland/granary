@@ -15,12 +15,16 @@
 
 #include "Initialization.hpp"
 
+extern "C" {
+
 extern std::uint32_t __si_data__ ;
 extern std::uint32_t __data_start__ ;
 extern std::uint32_t __data_end__ ;
 
 extern std::uint32_t __bss_start__ ;
 extern std::uint32_t __bss_end__ ;
+
+}
 
 // -----------------------------------------------------------------------------
 

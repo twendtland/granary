@@ -25,7 +25,6 @@ namespace device = nrf52;
 
 using Led1 = granary::Gpio<device::P0, 17, true>;
 using Led2 = granary::Gpio<device::P0, 18, true>;
-
 static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
 
 using PeriodicTimer = granary::Timer<nrf52::Timer0>;
@@ -49,6 +48,7 @@ void defaultHandler(){
 int main(){
     PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
     PeriodicTimer::start(500_ms);
+
     Led1::init(LedConfig);
     Led1::set();
 
