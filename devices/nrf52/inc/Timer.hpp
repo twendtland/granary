@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include "Types.hpp"
+#include "Units.hpp"
 #include "Config.hpp"
 #include "Pins.hpp"
 #include "Callback.hpp"
@@ -25,7 +25,8 @@
 
 namespace granary {
 
-    // timer clock divided by 2^prescaler, choose value accordingly
+    // TODO: only one channel used so far, compare only
+
     template<typename ... Values>
     static constexpr auto makeTimerConfig(Values ... values){
         constexpr auto defaults = std::make_tuple(nrf52::Timer::ModeType::Timer, nrf52::Timer::BitmodeType::Bit32, std::uint8_t{0});
@@ -87,7 +88,7 @@ void granary::Timer<Instance>::start(const granary::unit::ms interval){
     const std::uint32_t prescaler = Instance::Prescaler::Value::read();
     const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000) * interval.val);
     Instance::Cc::Value::write(ticks);
-    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: use channel
+    Instance::Intenset::Compare::write(std::uint8_t{1});
     Instance::Tasks_Start::Value::write(true);
 }
 
@@ -98,7 +99,7 @@ void granary::Timer<Instance>::start(const granary::unit::us interval){
     const std::uint32_t prescaler = Instance::Prescaler::Value::read();
     const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000000) * interval.val);
     Instance::Cc::Value::write(ticks);
-    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: use channel
+    Instance::Intenset::Compare::write(std::uint8_t{1});
     Instance::Tasks_Start::Value::write(true);
 }
 
@@ -107,7 +108,7 @@ void granary::Timer<Instance>::start(const granary::unit::us interval){
 template<typename Instance>
 void granary::Timer<Instance>::stop(){
     Instance::Tasks_Stop::write(true);
-    Instance::Intenclr::Compare::write(std::uint8_t{1}); // @todo: use channel
+    Instance::Intenclr::Compare::write(std::uint8_t{1});
 }
 
 // -----------------------------------------------------------------------------
@@ -122,7 +123,7 @@ void granary::Timer<Instance>::reset(){
 
 template<typename Instance>
 void granary::Timer<Instance>::handleIrq(){
-    callback(1); // @todo: use channel
+    callback(0);
     Instance::Events_Compare::Value::write(std::uint32_t{0});
     Instance::Tasks_Clear::Value::set();
 }
