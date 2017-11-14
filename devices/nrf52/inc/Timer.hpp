@@ -15,10 +15,12 @@
 
 #pragma once
 
+#include "Types.hpp"
 #include "Config.hpp"
 #include "Pins.hpp"
 #include "Callback.hpp"
 #include "nrf52_timer.hpp"
+
 #include "nrf52.h"
 
 namespace granary {
@@ -39,7 +41,8 @@ namespace granary {
             template<typename Config>
             static constexpr void init(const Config config, const IrqHandler handler);
 
-            static void start(const std::uint32_t ms);
+            static void start(const granary::unit::ms interval);
+            static void start(const granary::unit::us interval);
             static void stop();
             static void reset();
 
@@ -71,9 +74,8 @@ constexpr void granary::Timer<Instance>::init(const Config config, const IrqHand
 
     Instance::Events_Compare::Value::write(std::uint32_t{0});
     Instance::Tasks_Stop::Value::write(true);
-    Instance::Shorts::Compare0_Clear::set();
 
-    NVIC_EnableIRQ(TIMER0_IRQn);
+    NVIC_EnableIRQ(static_cast<IRQn_Type>(Instance::Interrupt));
 
     callback = handler;
 }
@@ -81,13 +83,22 @@ constexpr void granary::Timer<Instance>::init(const Config config, const IrqHand
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::Timer<Instance>::start(const std::uint32_t ms){
-    std::uint32_t prescaler = Instance::Prescaler::Value::read();
-    std::uint32_t ticks = (BaseFrequency / 1000 * ms) >> prescaler;
-    // 16000000/sek
-    //
-    Instance::Cc::Value::write(std::uint32_t{32000000});
-    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: used channel
+void granary::Timer<Instance>::start(const granary::unit::ms interval){
+    const std::uint32_t prescaler = Instance::Prescaler::Value::read();
+    const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000) * interval.val);
+    Instance::Cc::Value::write(ticks);
+    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: use channel
+    Instance::Tasks_Start::Value::write(true);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename Instance>
+void granary::Timer<Instance>::start(const granary::unit::us interval){
+    const std::uint32_t prescaler = Instance::Prescaler::Value::read();
+    const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000000) * interval.val);
+    Instance::Cc::Value::write(ticks);
+    Instance::Intenset::Compare::write(std::uint8_t{1}); // @todo: use channel
     Instance::Tasks_Start::Value::write(true);
 }
 
@@ -96,7 +107,7 @@ void granary::Timer<Instance>::start(const std::uint32_t ms){
 template<typename Instance>
 void granary::Timer<Instance>::stop(){
     Instance::Tasks_Stop::write(true);
-    Instance::Intenclr::Compare::write(std::uint8_t{1});
+    Instance::Intenclr::Compare::write(std::uint8_t{1}); // @todo: use channel
 }
 
 // -----------------------------------------------------------------------------
@@ -111,6 +122,7 @@ void granary::Timer<Instance>::reset(){
 
 template<typename Instance>
 void granary::Timer<Instance>::handleIrq(){
-    callback(1);
+    callback(1); // @todo: use channel
     Instance::Events_Compare::Value::write(std::uint32_t{0});
+    Instance::Tasks_Clear::Value::set();
 }

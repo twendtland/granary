@@ -48,6 +48,7 @@ namespace Timer {
 
 	template <std::uint32_t BaseAddress, std::uint16_t Irq, std::uint8_t Nc>
 	struct Controller {
+        static constexpr std::uint32_t Interrupt = Irq;
         static constexpr std::uint8_t NumChannels = Nc;
 		struct Tasks_Start {
 			using WidthType = std::uint32_t;
