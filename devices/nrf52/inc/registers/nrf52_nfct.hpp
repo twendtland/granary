@@ -58,7 +58,7 @@ namespace Nfct {
 		struct Tasks_Enablerxdata {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x01c;
-			using Value = Bitfield<Tasks_Enablerxdata, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Enablerxdata, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Goidle {
 			using WidthType = std::uint32_t;
@@ -83,67 +83,67 @@ namespace Nfct {
 		struct Events_Fieldlost {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x108;
-			using Value = Bitfield<Events_Fieldlost, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Fieldlost, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Txframestart {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x10c;
-			using Value = Bitfield<Events_Txframestart, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Txframestart, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Txframeend {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x110;
-			using Value = Bitfield<Events_Txframeend, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Txframeend, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Rxframestart {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x114;
-			using Value = Bitfield<Events_Rxframestart, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Rxframestart, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Rxframeend {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x118;
-			using Value = Bitfield<Events_Rxframeend, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Rxframeend, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Error {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x11c;
-			using Value = Bitfield<Events_Error, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Error, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Rxerror {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x128;
-			using Value = Bitfield<Events_Rxerror, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Rxerror, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Endrx {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x12c;
-			using Value = Bitfield<Events_Endrx, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Endrx, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Endtx {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x130;
-			using Value = Bitfield<Events_Endtx, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Endtx, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Autocolresstarted {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x138;
-			using Value = Bitfield<Events_Autocolresstarted, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Autocolresstarted, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Collision {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x148;
-			using Value = Bitfield<Events_Collision, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Collision, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Selected {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x14c;
-			using Value = Bitfield<Events_Selected, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Selected, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Started {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x150;
-			using Value = Bitfield<Events_Started, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Started, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Shorts {
 			using WidthType = std::uint32_t;
@@ -221,13 +221,28 @@ namespace Nfct {
 		struct Txd {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x518;
-			using Value = Bitfield<Txd, std::uint32_t, 0, 32, Access::ReadWrite>;
+            using Parity = Bitfield<Txd, bool, 0, 1, Access::ReadWrite>;
+			using DiscardMode = Bitfield<Txd, bool, 1, 1, Access::ReadWrite>;
+            using Sof = Bitfield<Txd, bool, 2, 1, Access::ReadWrite>;
+            using CrcMode = Bitfield<Txd, bool, 4, 1, Access::ReadWrite>;
 		};
+        struct TxAmount {
+            using WidthType = std::uint32_t;
+            static constexpr WidthType Address = BaseAddress + 0x51C;
+            using TxDataBits = Bitfield<Txd, std::uint8_t, 0, 3, Access::ReadWrite>;
+            using TxDataBytes = Bitfield<Txd, std::uint16_t, 3, 9, Access::ReadWrite>;
+        };
 		struct Rxd {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x520;
 			using Value = Bitfield<Rxd, std::uint32_t, 0, 32, Access::ReadWrite>;
 		};
+        struct RxAmount {
+            using WidthType = std::uint32_t;
+			static constexpr WidthType Address = BaseAddress + 0x524;
+			using Bits = Bitfield<Rxd, std::uint8_t, 0, 3, Access::ReadWrite>;
+            using Bytes = Bitfield<Rxd, std::uint16_t, 3, 9, Access::ReadWrite>;
+        };
 		struct Nfcid1_Last {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x590;
