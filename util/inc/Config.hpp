@@ -40,7 +40,7 @@ namespace granary {
             template<typename T>
             constexpr auto get() const {
                 Proxy<std::tuple<Values...>, Defaults, Util::has_type<T>(std::tuple<Values...>{})> proxy{values, defaults};
-                return proxy.get<T>();
+                return proxy.template get<T>();
             }
 
         private:

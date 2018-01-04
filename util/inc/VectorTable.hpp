@@ -9,7 +9,7 @@
 */
 
 // to be implemented in application
-void DefaultHandler();
+void defaultHandler();
 
 namespace granary {
     using HandlerFunction = void(*)();
@@ -25,7 +25,7 @@ namespace granary {
 
         template<std::uint32_t N>
         constexpr auto elemForPos(){
-            return DefaultHandler;
+            return defaultHandler;
         }
 
         template<std::uint32_t N, typename T, typename ... Ts>

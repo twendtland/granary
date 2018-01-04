@@ -3,13 +3,13 @@ ELF = TestTimer
 FORMAT = .hex
 BINARY = $(addsuffix $(FORMAT), $(ELF))
 
-DEVICE=nrf52
+DEVICE = nrf52
 
 GRANARY_DIR = ../../..
 SRCDIR = .
 INCDIR = $(GRANARY_DIR)/devices/$(DEVICE)/inc
 
-CCPATH = /opt/gcc6-arm-none-eabi/bin/
+CCPATH = /gcc/arm-none-eabi/bin
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
@@ -31,6 +31,7 @@ BUILD_DIR = build
 CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 $(LDFLAGS) -fno-exceptions -fno-rtti
 
 all: $(SOURCES)
+	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(SOURCES) -o $(BUILD_DIR)/$(ELF)
 	$(OBJDUMP) -fd $(BUILD_DIR)/$(ELF) > asm.s
 	$(OBJCOPY) -O binary $(BUILD_DIR)/$(ELF)  $(BUILD_DIR)/$(BINARY)
