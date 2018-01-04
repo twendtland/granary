@@ -5,9 +5,9 @@ BINARY = $(addsuffix $(FORMAT), $(ELF))
 
 DEVICE=nrf52
 
+GRANARY_DIR = ../../..
 SRCDIR = .
-INCDIR = ../../devices/$(DEVICE)/inc
-GRANARY_DIR = ../../
+INCDIR = $(GRANARY_DIR)/devices/$(DEVICE)/inc
 
 CCPATH = /opt/gcc6-arm-none-eabi/bin/
 
@@ -16,13 +16,13 @@ OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
 OBJCOPY = $(CCPATH)/arm-none-eabi-objcopy
 SIZE = $(CCPATH)/arm-none-eabi-size
 
-INCLUDES += -I$(INCDIR) -I../../../rye/inc -I../ -I../../util/inc -I$(INCDIR)/registers
-INCLUDES += -I../../cmsis/include  -I../../cmsis/
+INCLUDES += -I$(INCDIR) -I../$(GRANARY_DIR)/rye/inc -I../ -I$(GRANARY_DIR)/util/inc -I$(INCDIR)/registers
+INCLUDES += -I$(GRANARY_DIR)/cmsis/include  -I$(GRANARY_DIR)/cmsis/
 
 SOURCES = $(wildcard *.cpp)
 SOURCES += $(wildcard $(GRANARY_DIR)/util/src/*.cpp)
 
-LDFLAGS += -mthumb -T../../devices/nrf52/nrf52.ld -specs=nano.specs -specs=nosys.specs -lc
+LDFLAGS += -mthumb -T$(GRANARY_DIR)/devices/nrf52/nrf52.ld -specs=nano.specs -specs=nosys.specs -lc
 LDFLAGS += -mcpu=cortex-m4
 LDFLAGS += -Wl,--gc-sections
 
