@@ -1,18 +1,4 @@
 
-// Copyright 2017 Thomas Wendtland
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with \the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #pragma once
 
 #include <cstdint>
@@ -23,15 +9,6 @@ using namespace rye;
 namespace nrf52 {
 
 namespace Timer {
-
-    enum class Channel {
-        Channel0,
-        Channel1,
-        Channel2,
-        Channel3,
-        Channel4,
-        Channel5
-    };
 
 	enum class ModeType {
 		Timer = 0,
@@ -46,10 +23,9 @@ namespace Timer {
 		Bit32 = 3
 	};
 
-	template <std::uint32_t BaseAddress, std::uint16_t Irq, std::uint8_t Nc>
+	template <std::uint32_t BaseAddress, std::uint16_t Irq>
 	struct Controller {
-        static constexpr std::uint32_t Interrupt = Irq;
-        static constexpr std::uint8_t NumChannels = Nc;
+		static constexpr std::uint32_t Interrupt = Irq;
 		struct Tasks_Start {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x000;
@@ -109,7 +85,12 @@ namespace Timer {
 		struct Intenclr {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x308;
-			using Compare = Bitfield<Intenset, std::uint8_t, 16, 6, Access::ReadWrite>;
+			using Compare = Bitfield<Intenclr, std::uint8_t, 16, 6, Access::ReadWrite>;
+		};
+		struct Status {
+			using WidthType = std::uint32_t;
+			static constexpr WidthType Address = BaseAddress + 0x400;
+			using Value = Bitfield<Status, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Mode {
 			using WidthType = std::uint32_t;
@@ -126,20 +107,13 @@ namespace Timer {
 			static constexpr WidthType Address = BaseAddress + 0x510;
 			using Value = Bitfield<Prescaler, std::uint8_t, 0, 4, Access::ReadWrite>;
 		};
-
 		struct Cc {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x540;
-            static constexpr std::uint32_t NumRegisters = 5;
 			using Value = Bitfield<Cc, std::uint32_t, 0, 32, Access::ReadWrite>;
 		};
 	};
 
 }
-	using Timer0 = Timer::Controller<0X40008000, 8, 4>;
-	using Timer1 = Timer::Controller<0X40009000, 9, 4>;
-	using Timer2 = Timer::Controller<0X4000A000, 10, 4>;
-	using Timer3 = Timer::Controller<0X4001A000, 26, 6>;
-	using Timer4 = Timer::Controller<0X4001B000, 27, 6>;
 
-} // end of namespace nrf52
+} // end of namespace nrf52840

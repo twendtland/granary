@@ -45,7 +45,8 @@ namespace granary {
 
     template<typename ... Values>
     constexpr auto makeGpioConfig(Values ... values){
-        auto defaults  = std::make_tuple(GpioType::Output, GpioPullType::NoPull, GpioDrive::S0S1, GpioSensing::Disabled);
+        auto defaults  = std::make_tuple(GpioType::Output, GpioPullType::NoPull,
+                                         GpioDrive::S0S1, GpioSensing::Disabled);
         return makeConfig(defaults, values...);
     }
 }

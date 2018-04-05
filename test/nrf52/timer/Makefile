@@ -9,7 +9,7 @@ GRANARY_DIR = ../../..
 SRCDIR = .
 INCDIR = $(GRANARY_DIR)/devices/$(DEVICE)/inc
 
-CCPATH = /gcc/arm-none-eabi/bin
+CCPATH = /gcc/bin/
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump

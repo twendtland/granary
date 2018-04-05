@@ -15,19 +15,22 @@
 
 #include "nrf52.h"
 
+#include "nrf52832_gpio.hpp"
+#include "nrf52832_timer.hpp"
+
 #include "Gpio.hpp"
 #include "Timer.hpp"
 #include "Units.hpp"
 #include "VectorTable.hpp"
 #include "Initialization.hpp"
 
-namespace device = nrf52;
+namespace device = nrf52832;
 
 using Led1 = granary::Gpio<device::P0, 17, true>;
 using Led2 = granary::Gpio<device::P0, 18, true>;
 static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
 
-using PeriodicTimer = granary::Timer<nrf52::Timer0>;
+using PeriodicTimer = granary::Timer<device::Timer0>;
 static constexpr auto PeriodTimerConfig = granary::makeTimerConfig();
 
 using namespace granary::unit;
