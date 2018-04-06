@@ -25,7 +25,7 @@
 
 #include <cstring>
 
-namespace granary {
+namespace nrf52 {
 
     enum class NfcEvent {
         Ready,
@@ -47,12 +47,12 @@ namespace granary {
     constexpr auto makeNfcConfig(Values ... values){
         constexpr nrf52::Nfct::FramedelaymodeType delaymode = nrf52::Nfct::FramedelaymodeType::Freerun;
         constexpr auto defaults = std::make_tuple(nrf52::Nfct::BitframesddType{nrf52::Nfct::BitframesddType::Sdd00000}, delaymode);
-        return makeConfig(values..., defaults);
+        return granary::makeConfig(values..., defaults);
     }
 
     template<typename Instance>
     class NfcTag {
-        using IrqHandler = Callback<void, const NfcEvent>;
+        using IrqHandler = granary::Callback<void, const NfcEvent>;
         static constexpr std::uint16_t BufferSize = 16;
         public:
             template<typename Config>
@@ -75,19 +75,19 @@ namespace granary {
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-typename granary::NfcTag<Instance>::IrqHandler granary::NfcTag<Instance>::callback;
+typename nrf52::NfcTag<Instance>::IrqHandler nrf52::NfcTag<Instance>::callback;
 
 template<typename Instance>
-std::uint8_t granary::NfcTag<Instance>::cmdBuffer[BufferSize];
+std::uint8_t nrf52::NfcTag<Instance>::cmdBuffer[BufferSize];
 
 template<typename Instance>
-std::uint8_t granary::NfcTag<Instance>::responseBuffer[BufferSize];
+std::uint8_t nrf52::NfcTag<Instance>::responseBuffer[BufferSize];
 
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
 template<typename Config>
-void granary::NfcTag<Instance>::init(const Config config, const IrqHandler handler){
+void nrf52::NfcTag<Instance>::init(const Config config, const IrqHandler handler){
     nrf52::Uicr0::Nfcpins::Protect::set();
 
     Instance::Inten::Ready::set();
@@ -102,7 +102,7 @@ void granary::NfcTag<Instance>::init(const Config config, const IrqHandler handl
     Instance::Inten::Selected::set();
     Instance::Inten::Error::set();
 
-    const auto delaymode = getParam<nrf52::Nfct::FramedelaymodeType>(config);
+    const auto delaymode = granary::getParam<nrf52::Nfct::FramedelaymodeType>(config);
     Instance::Framedelaymode::Value::write(delaymode);
 
     const auto id = nrf52::Ficr0::Nfc::Value::read(1);
@@ -122,7 +122,7 @@ void granary::NfcTag<Instance>::init(const Config config, const IrqHandler handl
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::NfcTag<Instance>::start(){
+void nrf52::NfcTag<Instance>::start(){
     Instance::Tasks_Sense::Value::set();
     Instance::Tasks_Enablerxdata::Value::set();
     //Instance::Tasks_Activate::Value::set();
@@ -131,14 +131,14 @@ void granary::NfcTag<Instance>::start(){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::NfcTag<Instance>::stop(){
+void nrf52::NfcTag<Instance>::stop(){
     Instance::Tasks_Disable::Value::set();
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-constexpr void granary::NfcTag<Instance>::transmit(const std::uint8_t* data, const std::uint16_t len){
+constexpr void nrf52::NfcTag<Instance>::transmit(const std::uint8_t* data, const std::uint16_t len){
     ::memcpy(cmdBuffer, data, len);
     Instance::TxAmount::TxDataBits::write(std::uint8_t{0});
     Instance::TxAmount::TxDataBytes::write(len);
@@ -149,7 +149,7 @@ constexpr void granary::NfcTag<Instance>::transmit(const std::uint8_t* data, con
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::NfcTag<Instance>::handleIrq(){
+void nrf52::NfcTag<Instance>::handleIrq(){
     if (Instance::Events_Autocolresstarted::Value::read() == true){
         Instance::Events_Autocolresstarted::Value::clear();
         callback(NfcEvent::AutoDetectionStarted);

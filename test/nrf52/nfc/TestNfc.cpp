@@ -15,6 +15,8 @@
 
 #include "nrf52.h"
 
+#include "nrf52840_gpio.hpp"
+
 #include "Gpio.hpp"
 #include "Nfc.hpp"
 #include "Units.hpp"
@@ -24,25 +26,25 @@
 
 namespace device = nrf52;
 
-using Led1 = granary::Gpio<device::P0, 17, true>;
-using Led2 = granary::Gpio<device::P0, 18, true>;
-using Led3 = granary::Gpio<device::P0, 19, true>;
-using Led4 = granary::Gpio<device::P0, 20, true>;
-static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
+using Led1 = nrf52::Gpio<nrf52840::P0, 17, true>;
+using Led2 = nrf52::Gpio<nrf52840::P0, 18, true>;
+using Led3 = nrf52::Gpio<nrf52840::P0, 19, true>;
+using Led4 = nrf52::Gpio<nrf52840::P0, 20, true>;
+static constexpr auto LedConfig = nrf52::makeGpioConfig(nrf52::GpioPullType::NoPull);
 
-using NfcTag = granary::NfcTag<nrf52::Nfc0>;
-static constexpr auto NfcConfig = granary::makeNfcConfig();
+using NfcTag = nrf52::NfcTag<nrf52::Nfc0>;
+static constexpr auto NfcConfig = nrf52::makeNfcConfig();
 
 // -----------------------------------------------------------------------------
 
-void handleNfcEvent(const granary::NfcEvent event){
-    if (event == granary::NfcEvent::RxFrameEnd){
+void handleNfcEvent(const nrf52::NfcEvent event){
+    if (event == nrf52::NfcEvent::RxFrameEnd){
         Led1::toggle();
     }
-    if (event == granary::NfcEvent::TxEnded){
+    if (event == nrf52::NfcEvent::TxEnded){
         Led2::toggle();
     }
-    if (event == granary::NfcEvent::Selected){
+    if (event == nrf52::NfcEvent::Selected){
         Led3::toggle();
     }
 }

@@ -9,7 +9,7 @@ GRANARY_DIR = ../../..
 SRCDIR = .
 INCDIR = $(GRANARY_DIR)/devices/$(DEVICE)/inc
 
-CCPATH = /opt/gcc6-arm-none-eabi/bin/
+CCPATH = /opt/gcc/bin/
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
@@ -31,6 +31,7 @@ BUILD_DIR = build
 CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 $(LDFLAGS) -fno-exceptions -fno-rtti
 
 all: $(SOURCES)
+	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(SOURCES) -o $(BUILD_DIR)/$(ELF)
 	$(OBJCOPY) -O binary $(BUILD_DIR)/$(ELF)  $(BUILD_DIR)/$(BINARY)
 	$(SIZE) $(BUILD_DIR)/$(ELF)

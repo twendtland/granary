@@ -15,7 +15,6 @@
 
 #pragma once
 
-namespace granary {
 namespace Nfc {
 
     enum class PlatformConfig {
@@ -46,10 +45,9 @@ namespace Nfc {
 
     void handleAttributeRequest(const std::uint8_t* data, std::uint8_t* response);
 }
-}
 
 // -----------------------------------------------------------------------------
 
-void granary::Nfc::handleAttributeRequest(const std::uint8_t* data, std::uint8_t* response){
+void Nfc::handleAttributeRequest(const std::uint8_t* data, std::uint8_t* response){
 
 }

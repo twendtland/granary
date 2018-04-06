@@ -1,7 +1,9 @@
 
-ELF = TestNfc
-FORMAT = .hex
-BINARY = $(addsuffix $(FORMAT), $(ELF))
+NAME = TestNfc
+BINARY = $(addsuffix .bin, $(NAME))
+ELF = $(addsuffix .elf, $(NAME))
+HEX = $(addsuffix .hex, $(NAME))
+DEVICE = nrf52
 
 DEVICE=nrf52
 
@@ -9,7 +11,7 @@ GRANARY_DIR = ../../..
 SRCDIR = .
 INCDIR = $(GRANARY_DIR)/devices/$(DEVICE)/inc
 
-CCPATH = /gcc/arm-none-eabi/bin
+CCPATH = /opt/gcc/bin/
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
@@ -33,8 +35,9 @@ CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 $(LDFLAGS) -fno-exceptions -fno-rtt
 all: $(SOURCES)
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(SOURCES) -o $(BUILD_DIR)/$(ELF)
-	$(OBJCOPY) -O binary $(BUILD_DIR)/$(ELF)  $(BUILD_DIR)/$(BINARY)
-	$(SIZE) $(BUILD_DIR)/$(ELF)
+	$(OBJCOPY) -O binary $(BUILD_DIR)/$(ELF) $(BUILD_DIR)/$(BINARY)
+	$(OBJCOPY) -O ihex $(BUILD_DIR)/$(ELF) $(BUILD_DIR)/$(HEX)
+	$(SIZE) $(BUILD_DIR)/$(HEX)
 
 clean:
 	rm -f $(BUILD_DIR)/*

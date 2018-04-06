@@ -22,21 +22,19 @@
 
 #include "nrf52_timer.hpp"
 
-#include "nrf52.h"
-
-namespace granary {
+namespace nrf52 {
 
     // TODO: only one channel used so far, compare only
 
     template<typename ... Values>
     constexpr auto makeTimerConfig(Values ... values){
-        constexpr auto defaults = std::make_tuple(nrf52::Timer::ModeType::Timer, nrf52::Timer::BitmodeType::Bit32, std::uint8_t{0});
-        return makeConfig(defaults, values...);
+        constexpr auto defaults = std::make_tuple(Hardware::Timer::ModeType::Timer, Hardware::Timer::BitmodeType::Bit32, std::uint8_t{0});
+        return granary::makeConfig(defaults, values...);
     }
 
     template<typename Instance>
     class Timer {
-        using IrqHandler = Callback<void, std::uint8_t>;
+        using IrqHandler = granary::Callback<void, std::uint8_t>;
         static constexpr std::uint32_t BaseFrequency = 16000000;
         public:
             template<typename Config>
@@ -57,17 +55,17 @@ namespace granary {
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-typename granary::Timer<Instance>::IrqHandler granary::Timer<Instance>::callback;
+typename nrf52::Timer<Instance>::IrqHandler nrf52::Timer<Instance>::callback;
 
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
 template<typename Config>
-constexpr void granary::Timer<Instance>::init(const Config config, const IrqHandler handler){
-    auto mode = config.template get<nrf52::Timer::ModeType>();
+constexpr void nrf52::Timer<Instance>::init(const Config config, const IrqHandler handler){
+    auto mode = config.template get<Hardware::Timer::ModeType>();
     Instance::Mode::Value::write(mode);
 
-    auto bitmode = config.template get<nrf52::Timer::BitmodeType>();
+    auto bitmode = config.template get<Hardware::Timer::BitmodeType>();
     Instance::Bitmode::Value::write(bitmode);
 
     auto prescaler = config.template get<std::uint8_t>();
@@ -84,7 +82,7 @@ constexpr void granary::Timer<Instance>::init(const Config config, const IrqHand
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::Timer<Instance>::start(const granary::unit::ms interval){
+void nrf52::Timer<Instance>::start(const granary::unit::ms interval){
     const std::uint32_t prescaler = Instance::Prescaler::Value::read();
     const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000) * interval.val);
     Instance::Cc::Value::write(ticks);
@@ -95,7 +93,7 @@ void granary::Timer<Instance>::start(const granary::unit::ms interval){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::Timer<Instance>::start(const granary::unit::us interval){
+void nrf52::Timer<Instance>::start(const granary::unit::us interval){
     const std::uint32_t prescaler = Instance::Prescaler::Value::read();
     const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000000) * interval.val);
     Instance::Cc::Value::write(ticks);
@@ -106,7 +104,7 @@ void granary::Timer<Instance>::start(const granary::unit::us interval){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::Timer<Instance>::stop(){
+void nrf52::Timer<Instance>::stop(){
     Instance::Tasks_Stop::write(true);
     Instance::Intenclr::Compare::write(std::uint8_t{1});
 }
@@ -114,7 +112,7 @@ void granary::Timer<Instance>::stop(){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::Timer<Instance>::reset(){
+void nrf52::Timer<Instance>::reset(){
     stop();
     Instance::Tasks_Clear::Value::clear();
 }
@@ -122,7 +120,7 @@ void granary::Timer<Instance>::reset(){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void granary::Timer<Instance>::handleIrq(){
+void nrf52::Timer<Instance>::handleIrq(){
     callback(0);
     Instance::Events_Compare::Value::write(std::uint32_t{0});
     Instance::Tasks_Clear::Value::set();

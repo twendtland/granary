@@ -7,7 +7,7 @@
 using namespace rye;
 
 namespace nrf52 {
-
+namespace Hardware {
 namespace Timer {
 
 	enum class ModeType {
@@ -87,11 +87,6 @@ namespace Timer {
 			static constexpr WidthType Address = BaseAddress + 0x308;
 			using Compare = Bitfield<Intenclr, std::uint8_t, 16, 6, Access::ReadWrite>;
 		};
-		struct Status {
-			using WidthType = std::uint32_t;
-			static constexpr WidthType Address = BaseAddress + 0x400;
-			using Value = Bitfield<Status, bool, 0, 1, Access::ReadWrite>;
-		};
 		struct Mode {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x504;
@@ -113,7 +108,6 @@ namespace Timer {
 			using Value = Bitfield<Cc, std::uint32_t, 0, 32, Access::ReadWrite>;
 		};
 	};
-
 }
-
-} // end of namespace nrf52840
+}
+} // end of namespace nrf52

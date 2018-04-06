@@ -20,7 +20,7 @@ typedef enum {
   Reset_IRQn                    = -15,              /*!<   1  Reset Vector, invoked on Power up and warm reset                 */
   NonMaskableInt_IRQn           = -14,              /*!<   2  Non maskable Interrupt, cannot be stopped or preempted           */
   HardFault_IRQn                = -13,              /*!<   3  Hard Fault, all classes of Fault                                 */
-  MemoryManagement_IRQn         = -12,             
+  MemoryManagement_IRQn         = -12,
 
   UsageFault_IRQn               = -10,              /*!<   6  Usage Fault, i.e. Undef Instruction, Illegal State Transition    */
   SVCall_IRQn                   =  -5,              /*!<  11  System Service Call via SVC instruction                          */
@@ -78,7 +78,7 @@ void UartHandler(){
     for(;;){}
 }
 
-void DefaultHandler(){
+void defaultHandler(){
     for(;;){}
 }
 

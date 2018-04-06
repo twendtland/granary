@@ -1,5 +1,5 @@
 
-// Copyright 2017 Thomas Wendtland
+// Copyright 2018 Thomas Wendtland
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,30 +15,33 @@
 
 #include "nrf52.h"
 
-#include "nrf52832_gpio.hpp"
-#include "nrf52832_timer.hpp"
-
+#include "nrf52840_gpio.hpp"
+#include "nrf52840_timer.hpp"
 #include "Gpio.hpp"
 #include "Timer.hpp"
 #include "Units.hpp"
 #include "VectorTable.hpp"
 #include "Initialization.hpp"
 
-namespace device = nrf52832;
+namespace device = nrf52840;
 
-using Led1 = granary::Gpio<device::P0, 17, true>;
-using Led2 = granary::Gpio<device::P0, 18, true>;
-static constexpr auto LedConfig = makeGpioConfig(granary::GpioPullType::NoPull);
+static constexpr std::uint32_t StackTop = 0x20003000;
 
-using PeriodicTimer = granary::Timer<device::Timer0>;
-static constexpr auto PeriodTimerConfig = granary::makeTimerConfig();
+using Led1 = nrf52::Gpio<device::P0, 13, true>;
+using Led2 = nrf52::Gpio<device::P0, 14, true>;
+static constexpr auto LedConfig = nrf52::makeGpioConfig(nrf52::GpioPullType::NoPull);
+
+using PeriodicTimer = nrf52::Timer<device::Timer0>;
+static constexpr auto PeriodTimerConfig = nrf52::makeTimerConfig();
 
 using namespace granary::unit;
+
+using BlinkLed = Led2;
 
 // -----------------------------------------------------------------------------
 
 void handleTimeout(const std::uint8_t channel){
-    Led1::toggle();
+    BlinkLed::toggle();
 }
 
 // -----------------------------------------------------------------------------
@@ -52,8 +55,8 @@ int main(){
     PeriodicTimer::init(PeriodTimerConfig, handleTimeout);
     PeriodicTimer::start(500_ms);
 
-    Led1::init(LedConfig);
-    Led1::set();
+    BlinkLed::init(LedConfig);
+    BlinkLed::set();
 
     for(;;);
 }
@@ -69,6 +72,6 @@ void handleReset(){
 // -----------------------------------------------------------------------------
 
 __attribute__((section(".isr_vector"), used))
-constexpr auto isr = granary::makeVectorTable<48>(0x20003000, granary::makeVector(Reset_IRQn, handleReset), granary::makeVector(TIMER0_IRQn, PeriodicTimer::handleIrq));
+constexpr auto isr = granary::makeVectorTable<48>(StackTop, granary::makeVector(Reset_IRQn, handleReset), granary::makeVector(TIMER0_IRQn, PeriodicTimer::handleIrq));
 
 // -----------------------------------------------------------------------------

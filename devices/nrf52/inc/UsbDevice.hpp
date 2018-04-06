@@ -15,35 +15,10 @@
 
 #pragma once
 
-namespace nrf52 {
+#include "nrf52840_usbd.hpp"
 
-    enum class GpioType {
-        Output,
-        Input,
-        PeripheralFunction,
-        Analog
-    };
-
-    enum class GpioPullType {
-        NoPull,
-        PullDown,
-        PullUp
-    };
-
-    enum class GpioDrive {
-        S0S1,
-        H0S1,
-        S0H1,
-        H0H1,
-        D0S1,
-        D0H1,
-        S0D1,
-        H0D1
-    };
-
-    enum class GpioSensing {
-        Disabled = 0,
-        SenseHigh = 2,
-        SenseLow = 3
+namespace granary {
+    class UsbDevice {
+        
     };
 }
