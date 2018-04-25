@@ -1,24 +1,22 @@
 
-NAME = TestNfc
+NAME = TestUsb
 BINARY = $(addsuffix .bin, $(NAME))
 ELF = $(addsuffix .elf, $(NAME))
 HEX = $(addsuffix .hex, $(NAME))
 DEVICE = nrf52
 
-DEVICE=nrf52
-
 GRANARY_DIR = ../../..
 SRCDIR = .
 INCDIR = $(GRANARY_DIR)/devices/$(DEVICE)/inc
 
-CCPATH = /gcc/bin/
+CCPATH = /gcc/bin
 
 CC = $(CCPATH)/arm-none-eabi-c++
 OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
 OBJCOPY = $(CCPATH)/arm-none-eabi-objcopy
 SIZE = $(CCPATH)/arm-none-eabi-size
 
-INCLUDES += -I$(INCDIR) -I../$(GRANARY_DIR)/rye/inc -I../ -I$(GRANARY_DIR)/util/inc -I$(INCDIR)/registers
+INCLUDES = -I$(INCDIR) -I../$(GRANARY_DIR)/rye/inc -I../ -I$(GRANARY_DIR)/util/inc -I$(INCDIR)/registers
 INCLUDES += -I$(GRANARY_DIR)/cmsis/include  -I$(GRANARY_DIR)/cmsis/
 
 SOURCES = $(wildcard *.cpp)
@@ -41,4 +39,6 @@ all: $(SOURCES)
 
 clean:
 	rm -f $(BUILD_DIR)/*
-	rm -rf asm.s
+	rm -f $(INCDIR)/*.gch
+	rm -f $(INCDIR)/registers/*.gch
+	rm -f asm.s

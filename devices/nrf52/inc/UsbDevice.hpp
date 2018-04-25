@@ -15,10 +15,87 @@
 
 #pragma once
 
+#include "Usb.hpp"
+#include "Callback.hpp"
+#include "Clock.hpp"
+
+#include "nrf52_power.hpp"
 #include "nrf52840_usbd.hpp"
 
-namespace granary {
+namespace nrf52 {
+
     class UsbDevice {
-        
+        public:
+            using IrqHandler = granary::Callback<void, const std::uint8_t>;
+
+            template<typename Config>
+            static constexpr void init(const Config config, const IrqHandler handler);
+
+            static void deInit();
+
+            static void handleIrq();
+
+        private:
+            static void handleReset();
+            static void handleSetup();
+
+            static IrqHandler callback;
     };
+}
+
+// -----------------------------------------------------------------------------
+
+typename nrf52::UsbDevice::IrqHandler nrf52::UsbDevice::callback;
+
+// -----------------------------------------------------------------------------
+
+template<typename Config>
+constexpr void nrf52::UsbDevice::init(const Config config, const IrqHandler handler) {
+    while (Power::Events_Usbdetected::Value::read() == false) {
+    }
+    Usbd::Enable::Value::set();
+    Clock::startHighSpeedOscillator();
+
+    // wait for this event before handling others
+    Usbd::Inten::Usbevent::set();
+
+    callback = handler;
+    NVIC_EnableIRQ(static_cast<IRQn_Type>(Usbd::Interrupt));
+}
+
+// -----------------------------------------------------------------------------
+
+void nrf52::UsbDevice::handleIrq() {
+    if (Usbd::Events_Usbevent::Value::read() == true){
+        if (Usbd::Eventcause::Ready::read() == true &&
+            Power::Events_Usbpwrrdy::Value::read() == true) { // @todo: check clock ready?
+            Usbd::Eventcause::Ready::clear();
+            Usbd::Inten::Usbevent::clear();
+            Usbd::Inten::Usbreset::set();
+            Usbd::Usbpullup::Connect::set();
+        }
+    }
+    if (Usbd::Events_Usbreset::Value::read() == true) {
+        handleReset();
+    }
+    else if (Usbd::Events_Ep0Setup::Value::read() == true) {
+        handleSetup();
+    }
+
+}
+
+// -----------------------------------------------------------------------------
+
+void nrf52::UsbDevice::handleReset() {
+    Usbd::Events_Usbreset::Value::clear();
+    Usbd::Inten::Ep0Setup::set();
+}
+
+// -----------------------------------------------------------------------------
+
+void nrf52::UsbDevice::handleSetup() {
+    Usbd::Inten::Ep0Setup::clear();
+    std::uint32_t t = 0x20003000;
+    Usbd::EndpointsIn::Ptr::write(t, 2);
+    callback(0);
 }

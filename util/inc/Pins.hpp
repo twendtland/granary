@@ -18,10 +18,14 @@
 #include <tuple>
 
 namespace granary {
-namespace Pin {
+    template<std::uint32_t port, std::uint32_t pinnr>
+    struct Pin {
+        static constexpr std::uint32_t Port = port;
+        static constexpr std::uint32_t PinNumber = pinnr;
+    };
+    
     struct NotConnected {
         template<typename T>
         static constexpr void init(T t){} // just to satifsy the compiler
     };
-}
 }

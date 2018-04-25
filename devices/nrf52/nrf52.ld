@@ -1,6 +1,4 @@
 
-SEARCH_DIR(.)
-GROUP(-lgcc -lc -lnosys)
 
 MEMORY
 {

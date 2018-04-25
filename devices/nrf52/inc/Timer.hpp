@@ -26,12 +26,6 @@ namespace nrf52 {
 
     // TODO: only one channel used so far, compare only
 
-    template<typename ... Values>
-    constexpr auto makeTimerConfig(Values ... values){
-        constexpr auto defaults = std::make_tuple(Hardware::Timer::ModeType::Timer, Hardware::Timer::BitmodeType::Bit32, std::uint8_t{0});
-        return granary::makeConfig(defaults, values...);
-    }
-
     template<typename Instance>
     class Timer {
         using IrqHandler = granary::Callback<void, std::uint8_t>;
@@ -50,6 +44,12 @@ namespace nrf52 {
         private:
             static IrqHandler callback;
     };
+
+    template<typename ... Values>
+    constexpr auto makeTimerConfig(Values ... values){
+        constexpr auto defaults = std::make_tuple(Hardware::Timer::ModeType::Timer, Hardware::Timer::BitmodeType::Bit32, std::uint8_t{0});
+        return granary::makeConfig(defaults, values...);
+    }
 }
 
 // -----------------------------------------------------------------------------

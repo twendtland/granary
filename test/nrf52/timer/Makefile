@@ -22,7 +22,7 @@ INCLUDES += -I$(GRANARY_DIR)/cmsis/include  -I$(GRANARY_DIR)/cmsis/
 SOURCES = $(wildcard *.cpp)
 SOURCES += $(wildcard $(GRANARY_DIR)/util/src/*.cpp)
 
-LDFLAGS += -mthumb -T$(GRANARY_DIR)/devices/nrf52/nrf52.ld -specs=nano.specs -specs=nosys.specs -lc
+LDFLAGS = -mthumb -T$(GRANARY_DIR)/devices/nrf52/nrf52.ld -specs=nano.specs -specs=nosys.specs -lc
 LDFLAGS += -mcpu=cortex-m4
 LDFLAGS += -Wl,--gc-sections
 

@@ -7,7 +7,7 @@
 using namespace rye;
 
 namespace nrf52 {
-
+namespace Hardware {
 namespace Clock {
 
 	enum class SrcType {
@@ -34,57 +34,57 @@ namespace Clock {
 		struct Tasks_Hfclkstart {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x000;
-			using Value = Bitfield<Tasks_Hfclkstart, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Hfclkstart, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Hfclkstop {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x004;
-			using Value = Bitfield<Tasks_Hfclkstop, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Hfclkstop, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Lfclkstart {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x008;
-			using Value = Bitfield<Tasks_Lfclkstart, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Lfclkstart, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Lfclkstop {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x00c;
-			using Value = Bitfield<Tasks_Lfclkstop, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Lfclkstop, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Cal {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x010;
-			using Value = Bitfield<Tasks_Cal, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Cal, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Ctstart {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x014;
-			using Value = Bitfield<Tasks_Ctstart, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Ctstart, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Ctstop {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x018;
-			using Value = Bitfield<Tasks_Ctstop, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Ctstop, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Hfclkstarted {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x100;
-			using Value = Bitfield<Events_Hfclkstarted, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Hfclkstarted, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Lfclkstarted {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x104;
-			using Value = Bitfield<Events_Lfclkstarted, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Lfclkstarted, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Done {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x10c;
-			using Value = Bitfield<Events_Done, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Done, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Ctto {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x110;
-			using Value = Bitfield<Events_Ctto, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Ctto, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Intenset {
 			using WidthType = std::uint32_t;
@@ -150,6 +150,7 @@ namespace Clock {
 	};
 
 }
-	using SysClock = Clock::Controller<0X40000000, 0>;
+}
+	using SysClock = Hardware::Clock::Controller<0X40000000, 0>;
 
 } // end of namespace nrf52

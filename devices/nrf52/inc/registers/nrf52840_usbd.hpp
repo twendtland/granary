@@ -6,8 +6,8 @@
 
 using namespace rye;
 
-namespace nrf52840 {
-
+namespace nrf52 {
+namespace Hardware {
 namespace Usbd {
 
 	enum class RecipientType {
@@ -55,17 +55,17 @@ namespace Usbd {
 		struct Tasks_Startepins {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x004;
-			using Value = Bitfield<Tasks_Startepins, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Startepins, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Startisoin {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x024;
-			using Value = Bitfield<Tasks_Startisoin, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Startisoin, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Startepouts {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x028;
-			using Value = Bitfield<Tasks_Startepouts, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Startepouts, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Tasks_Startisoout {
 			using WidthType = std::uint32_t;
@@ -95,32 +95,32 @@ namespace Usbd {
 		struct Tasks_Dpdmnodrive {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x05c;
-			using Value = Bitfield<Tasks_Dpdmnodrive, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Tasks_Dpdmnodrive, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Usbreset {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x100;
-			using Value = Bitfield<Events_Usbreset, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Usbreset, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Started {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x104;
-			using Value = Bitfield<Events_Started, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Started, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Endepins {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x108;
-			using Value = Bitfield<Events_Endepins, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Endepins, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Ep0Datadone {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x128;
-			using Value = Bitfield<Events_Ep0Datadone, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Ep0Datadone, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Endisoin {
 			using WidthType = std::uint32_t;
 			static constexpr WidthType Address = BaseAddress + 0x12c;
-			using Value = Bitfield<Events_Endisoin, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Value = Bitfield<Events_Endisoin, bool, 0, 1, Access::ReadWrite>;
 		};
 		struct Events_Endepouts {
 			using WidthType = std::uint32_t;
@@ -437,10 +437,13 @@ namespace Usbd {
 			static constexpr WidthType Address = BaseAddress + 0x530;
 			using Response = Bitfield<Isoinconfig, bool, 0, 1, Access::ReadWrite>;
 		};
-		struct Epins {
+		struct EndpointsIn {
 			using WidthType = std::uint32_t;
-			static constexpr WidthType Address = BaseAddress + 0x600;
-			using Value = Bitfield<Epins, std::uint32_t, 0, 32, Access::ReadWrite>;
+			static constexpr std::uint32_t Width = 0x14;
+			static constexpr std::uint32_t Address = BaseAddress + 0x600;
+			using Ptr = Bitfield<EndpointsIn, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Maxcount = Bitfield<EndpointsIn, std::uint32_t, 0, 32, Access::ReadWrite>;
+			using Amount = Bitfield<EndpointsIn, std::uint32_t, 0, 32, Access::ReadOnly>;
 		};
 		struct Isoin {
 			using WidthType = std::uint32_t;
@@ -458,8 +461,7 @@ namespace Usbd {
 			using Value = Bitfield<Isoout, std::uint32_t, 0, 32, Access::ReadWrite>;
 		};
 	};
-
 }
-	using Usbd = Usbd::Controller<0X40027000, 39>;
-
+}
+	using Usbd = Hardware::Usbd::Controller<0x40027000, 39>;
 } // end of namespace nrf52840
