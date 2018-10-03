@@ -22,13 +22,13 @@ namespace Util {
 
     // check if type is in tuple
     template<typename T>
-    constexpr bool has_type(std::tuple<>){
+    constexpr bool has_type(std::tuple<>) {
         return false ;
     }
 
     template<typename T, typename U, typename ... Us>
-    constexpr bool has_type(std::tuple<U, Us...>){
-        if (std::is_same<T, U>::value){
+    constexpr bool has_type(std::tuple<U, Us...>) {
+        if (std::is_same<T, U>::value) {
             return true;
         }
         else {
@@ -38,18 +38,24 @@ namespace Util {
 
     // check if one tuple contains types not in the other
     template<typename Tuple>
-    constexpr bool has_all_types(std::tuple<>){
+    constexpr bool has_all_types(std::tuple<>) {
         return true;
     }
 
     template<typename Tuple, typename T>
-    constexpr bool has_all_types(std::tuple<T>){
+    constexpr bool has_all_types(std::tuple<T>) {
         return has_type<T>(Tuple{});
     }
 
     template<typename Tuple, typename T, typename ... Ts>
-    constexpr bool has_all_types(std::tuple<T, Ts...>){
+    constexpr bool has_all_types(std::tuple<T, Ts...>) {
         return has_type<T>(Tuple{}) && has_all_types<Tuple>(std::tuple<Ts...>{});
+    }
+
+    constexpr auto toByteTuple(std::uint16_t value) {
+        // @todo: take endiannes into account
+        auto v = static_cast<std::uint8_t>(value);
+        return std::make_tuple(std::uint8_t{(value>>8 & 0xFF)}, std::uint8_t{v & 0xFF});
     }
 }
 }

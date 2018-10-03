@@ -71,12 +71,12 @@ namespace granary {
     };
 
     template<typename T, typename Config>
-    constexpr auto getParam(Config config){
+    constexpr auto getParam(Config config) {
         return config.template get<T>();
     }
 
     template<typename Defaults, typename ... Values>
-    constexpr auto makeConfig(Defaults defaults, Values ... values){
+    constexpr auto makeConfig(Defaults defaults, Values ... values) {
         return Config<Defaults, Values ...>{defaults, values...};
     }
 }

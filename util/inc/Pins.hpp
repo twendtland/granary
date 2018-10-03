@@ -26,6 +26,6 @@ namespace granary {
     
     struct NotConnected {
         template<typename T>
-        static constexpr void init(T t){} // just to satifsy the compiler
+        static constexpr void init(T t) {} // just to satifsy the compiler
     };
 }

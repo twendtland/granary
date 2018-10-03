@@ -10,13 +10,13 @@ namespace granary {
         constexpr Callback(const Callback& rhs) : function {rhs.function}{}
         constexpr Callback(Signature f) : function {f}{}
 
-        constexpr Callback operator= (const Callback& rhs){
+        constexpr Callback operator= (const Callback& rhs) {
             function = rhs.function;
             return *this;
         }
 
-        constexpr void operator()(Args ... args){
-            if (function){
+        constexpr void operator()(Args ... args) {
+            if (function) {
                 function(args...);
             }
         }

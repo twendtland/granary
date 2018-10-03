@@ -23,7 +23,7 @@ namespace granary {
             unsigned long long val;
         };
 
-        ms operator "" _ms (unsigned long long n){
+        ms operator "" _ms (unsigned long long n) {
             return ms(n);
         }
 
@@ -32,7 +32,7 @@ namespace granary {
             unsigned long long val;
         };
 
-        us operator "" _us (unsigned long long n){
+        us operator "" _us (unsigned long long n) {
             return us(n);
         }
     }

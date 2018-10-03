@@ -44,7 +44,7 @@ namespace nrf52 {
     };
 
     template<typename ... Values>
-    constexpr auto makeNfcConfig(Values ... values){
+    constexpr auto makeNfcConfig(Values ... values) {
         constexpr nrf52::Nfct::FramedelaymodeType delaymode = nrf52::Nfct::FramedelaymodeType::Freerun;
         constexpr auto defaults = std::make_tuple(nrf52::Nfct::BitframesddType{nrf52::Nfct::BitframesddType::Sdd00000}, delaymode);
         return granary::makeConfig(values..., defaults);
@@ -87,7 +87,7 @@ std::uint8_t nrf52::NfcTag<Instance>::responseBuffer[BufferSize];
 
 template<typename Instance>
 template<typename Config>
-void nrf52::NfcTag<Instance>::init(const Config config, const IrqHandler handler){
+void nrf52::NfcTag<Instance>::init(const Config config, const IrqHandler handler) {
     nrf52::Uicr0::Nfcpins::Protect::set();
 
     Instance::Inten::Ready::set();
@@ -122,7 +122,7 @@ void nrf52::NfcTag<Instance>::init(const Config config, const IrqHandler handler
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::NfcTag<Instance>::start(){
+void nrf52::NfcTag<Instance>::start() {
     Instance::Tasks_Sense::Value::set();
     Instance::Tasks_Enablerxdata::Value::set();
     //Instance::Tasks_Activate::Value::set();
@@ -131,14 +131,14 @@ void nrf52::NfcTag<Instance>::start(){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::NfcTag<Instance>::stop(){
+void nrf52::NfcTag<Instance>::stop() {
     Instance::Tasks_Disable::Value::set();
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-constexpr void nrf52::NfcTag<Instance>::transmit(const std::uint8_t* data, const std::uint16_t len){
+constexpr void nrf52::NfcTag<Instance>::transmit(const std::uint8_t* data, const std::uint16_t len) {
     ::memcpy(cmdBuffer, data, len);
     Instance::TxAmount::TxDataBits::write(std::uint8_t{0});
     Instance::TxAmount::TxDataBytes::write(len);
@@ -149,44 +149,44 @@ constexpr void nrf52::NfcTag<Instance>::transmit(const std::uint8_t* data, const
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::NfcTag<Instance>::handleIrq(){
-    if (Instance::Events_Autocolresstarted::Value::read() == true){
+void nrf52::NfcTag<Instance>::handleIrq() {
+    if (Instance::Events_Autocolresstarted::Value::read() == true) {
         Instance::Events_Autocolresstarted::Value::clear();
         callback(NfcEvent::AutoDetectionStarted);
     }
-    if (Instance::Events_Collision::Value::read() == true){
+    if (Instance::Events_Collision::Value::read() == true) {
         Instance::Events_Collision::Value::clear();
         callback(NfcEvent::Collision);
         return;
     }
-    if (Instance::Events_Error::Value::read() == true){
+    if (Instance::Events_Error::Value::read() == true) {
         Instance::Events_Error::Value::clear();
         callback(NfcEvent::Error);
     }
-    if (Instance::Events_Fielddetected::Value::read() == true){
+    if (Instance::Events_Fielddetected::Value::read() == true) {
         Instance::Events_Fielddetected::Value::clear();
         Instance::Tasks_Activate::Value::set();
         callback(NfcEvent::FieldDetected);
     }
-    if (Instance::Events_Fieldlost::Value::read() == true){
+    if (Instance::Events_Fieldlost::Value::read() == true) {
         Instance::Events_Fieldlost::Value::clear();
         callback(NfcEvent::FieldLost);
     }
-    if (Instance::Events_Selected::Value::read() == true){
+    if (Instance::Events_Selected::Value::read() == true) {
         Instance::Events_Selected::Value::clear();
         callback(NfcEvent::Selected);
     }
-    if (Instance::Events_Rxframestart::Value::read() == true){
+    if (Instance::Events_Rxframestart::Value::read() == true) {
         Instance::Events_Rxframestart::Value::clear();
         callback(NfcEvent::RxFrameStart);
     }
-    if (Instance::Events_Rxframeend::Value::read() == true){
+    if (Instance::Events_Rxframeend::Value::read() == true) {
         Instance::Events_Rxframeend::Value::clear();
         Nfc::Command cmd = static_cast<Nfc::Command>(cmdBuffer[0]);
 
         std::uint16_t num_bytes = Instance::RxAmount::Bytes::read();
         std::uint8_t num_bits = Instance::RxAmount::Bits::read();
-        if (cmd == Nfc::Command::SensReq){
+        if (cmd == Nfc::Command::SensReq) {
             // SENS_RES response
             std::uint8_t resp[2] = {0};
             //resp[0] = static_cast<std::uint8_t>(Instance::Sensres::Nfcidsize::read()) << 6 | static_cast<std::uint8_t>(Instance::Sensres::Bitframesdd::read());
@@ -195,20 +195,20 @@ void nrf52::NfcTag<Instance>::handleIrq(){
             resp[0] = 0x2;
             resp[1] = 0x1;
             //transmit(resp, sizeof(resp));
-            if (num_bytes == 1){
+            if (num_bytes == 1) {
                 callback(NfcEvent::RxFrameEnd);
             }
-            else if (num_bytes == 2){
+            else if (num_bytes == 2) {
                 callback(NfcEvent::TxEnded);
             }
-            if (num_bits == 7){
+            if (num_bits == 7) {
                 callback(NfcEvent::Selected);
             }
             return;
         }
-        if (cmd == Nfc::Command::SddCl1){
+        if (cmd == Nfc::Command::SddCl1) {
             // SDD_RES response
-            if (cmdBuffer[1] == 0x20){
+            if (cmdBuffer[1] == 0x20) {
                 //callback(NfcEvent::TxEnded);
                 // @todo: read SEL_PAR
                 std::uint8_t resp[5] = {0};
@@ -219,17 +219,17 @@ void nrf52::NfcTag<Instance>::handleIrq(){
                 resp[4] = resp[0] ^ resp[1] ^ resp[2] ^ resp[3];
                 //transmit(resp, sizeof(resp));
             }
-            if (cmdBuffer[1] == 0x70){
+            if (cmdBuffer[1] == 0x70) {
 
             }
             return;
         }
-        if (cmd == Nfc::Command::AttrReq){
+        if (cmd == Nfc::Command::AttrReq) {
             callback(NfcEvent::Selected);
         }
         //memset(cmdBuffer, 0, sizeof(cmdBuffer));
     }
-    if (Instance::Events_Endtx::Value::read() == true){
+    if (Instance::Events_Endtx::Value::read() == true) {
         Instance::Events_Endtx::Value::clear();
 
         Instance::Maxlen::Value::write(BufferSize);

@@ -66,7 +66,7 @@ constexpr void nrf52::UsbDevice::init(const Config config, const IrqHandler hand
 // -----------------------------------------------------------------------------
 
 void nrf52::UsbDevice::handleIrq() {
-    if (Usbd::Events_Usbevent::Value::read() == true){
+    if (Usbd::Events_Usbevent::Value::read() == true) {
         if (Usbd::Eventcause::Ready::read() == true &&
             Power::Events_Usbpwrrdy::Value::read() == true) { // @todo: check clock ready?
             Usbd::Eventcause::Ready::clear();

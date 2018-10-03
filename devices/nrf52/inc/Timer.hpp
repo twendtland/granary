@@ -46,7 +46,7 @@ namespace nrf52 {
     };
 
     template<typename ... Values>
-    constexpr auto makeTimerConfig(Values ... values){
+    constexpr auto makeTimerConfig(Values ... values) {
         constexpr auto defaults = std::make_tuple(Hardware::Timer::ModeType::Timer, Hardware::Timer::BitmodeType::Bit32, std::uint8_t{0});
         return granary::makeConfig(defaults, values...);
     }
@@ -61,7 +61,7 @@ typename nrf52::Timer<Instance>::IrqHandler nrf52::Timer<Instance>::callback;
 
 template<typename Instance>
 template<typename Config>
-constexpr void nrf52::Timer<Instance>::init(const Config config, const IrqHandler handler){
+constexpr void nrf52::Timer<Instance>::init(const Config config, const IrqHandler handler) {
     auto mode = config.template get<Hardware::Timer::ModeType>();
     Instance::Mode::Value::write(mode);
 
@@ -82,7 +82,7 @@ constexpr void nrf52::Timer<Instance>::init(const Config config, const IrqHandle
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::Timer<Instance>::start(const granary::unit::ms interval){
+void nrf52::Timer<Instance>::start(const granary::unit::ms interval) {
     const std::uint32_t prescaler = Instance::Prescaler::Value::read();
     const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000) * interval.val);
     Instance::Cc::Value::write(ticks);
@@ -93,7 +93,7 @@ void nrf52::Timer<Instance>::start(const granary::unit::ms interval){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::Timer<Instance>::start(const granary::unit::us interval){
+void nrf52::Timer<Instance>::start(const granary::unit::us interval) {
     const std::uint32_t prescaler = Instance::Prescaler::Value::read();
     const std::uint32_t ticks = (((BaseFrequency >> prescaler) / 1000000) * interval.val);
     Instance::Cc::Value::write(ticks);
@@ -104,7 +104,7 @@ void nrf52::Timer<Instance>::start(const granary::unit::us interval){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::Timer<Instance>::stop(){
+void nrf52::Timer<Instance>::stop() {
     Instance::Tasks_Stop::write(true);
     Instance::Intenclr::Compare::write(std::uint8_t{1});
 }
@@ -112,7 +112,7 @@ void nrf52::Timer<Instance>::stop(){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::Timer<Instance>::reset(){
+void nrf52::Timer<Instance>::reset() {
     stop();
     Instance::Tasks_Clear::Value::clear();
 }
@@ -120,7 +120,7 @@ void nrf52::Timer<Instance>::reset(){
 // -----------------------------------------------------------------------------
 
 template<typename Instance>
-void nrf52::Timer<Instance>::handleIrq(){
+void nrf52::Timer<Instance>::handleIrq() {
     callback(0);
     Instance::Events_Compare::Value::write(std::uint32_t{0});
     Instance::Tasks_Clear::Value::set();

@@ -31,9 +31,9 @@ namespace Nfc {
         Rats = 0xE0
     };
 
-    void parse(const std::uint8_t* data, std::uint8_t* response){
+    void parse(const std::uint8_t* data, std::uint8_t* response) {
         Command cmd = static_cast<Command>(data[0]);
-        switch (cmd){
+        switch (cmd) {
             case Command::AllReq:
                 break;
             case Command::SensReq:
@@ -48,6 +48,6 @@ namespace Nfc {
 
 // -----------------------------------------------------------------------------
 
-void Nfc::handleAttributeRequest(const std::uint8_t* data, std::uint8_t* response){
+void Nfc::handleAttributeRequest(const std::uint8_t* data, std::uint8_t* response) {
 
 }
