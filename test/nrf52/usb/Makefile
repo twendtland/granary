@@ -16,7 +16,7 @@ OBJDUMP = $(CCPATH)/arm-none-eabi-objdump
 OBJCOPY = $(CCPATH)/arm-none-eabi-objcopy
 SIZE = $(CCPATH)/arm-none-eabi-size
 
-INCLUDES = -I$(INCDIR) -I../$(GRANARY_DIR)/rye/inc -I../ -I$(GRANARY_DIR)/util/inc -I$(INCDIR)/registers
+INCLUDES = -I$(INCDIR) -I../$(GRANARY_DIR)/rye/inc -I../ -I$(GRANARY_DIR)/util/inc -I$(INCDIR)/registers -I$(GRANARY_DIR)/devices/$(DEVICE)/
 INCLUDES += -I$(GRANARY_DIR)/cmsis/include  -I$(GRANARY_DIR)/cmsis/
 
 SOURCES = $(wildcard *.cpp)
@@ -28,7 +28,7 @@ LDFLAGS += -Wl,--gc-sections
 
 BUILD_DIR = build
 
-CFLAGS = -Os -g -Wall $(INCLUDES) -std=c++14 $(LDFLAGS) -fno-exceptions -fno-rtti
+CFLAGS = -Os -g -Wall -Wpedantic $(INCLUDES) -std=c++14 $(LDFLAGS) -fno-exceptions -fno-rtti
 
 all: $(SOURCES)
 	mkdir -p $(BUILD_DIR)

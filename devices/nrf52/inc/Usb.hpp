@@ -6,13 +6,6 @@
 #include <type_traits>
 #include <tuple>
 
-
-template<typename T, std::uint8_t offset>
-struct Parameter {
-    T t;
-};
-
-
 namespace Usb {
 
     enum class State {
@@ -23,12 +16,12 @@ namespace Usb {
         Suspended
     };
 
+    constexpr auto DeviceDescriptorDefaults = std::make_tuple(std::uint8_t{0xAA}, std::uint8_t{0xBB}, std::uint8_t{0xCC}, std::uint8_t{0xDD});
+
     struct DeviceDescriptor {
+        static constexpr std::uint32_t Length = 0x4;
         std::uint8_t bLength;
         std::uint8_t bDescriptorType;
-
-        using Length = Parameter<uint8_t, 0>;
-
         // std::uint16_t bcdUSB;
         // std::uint8_t bDeviceClass;
         // std::uint8_t bDeviceSubClass;
@@ -43,10 +36,54 @@ namespace Usb {
         // std::uint8_t bNumConfigurations;
     };
 
-    template<typename T>
-    constexpr auto makeDeviceDescriptor(T t) {
-        return DeviceDescriptor::Length {std::get<DeviceDescriptor::Length>(t)};
+    struct DescriptorField{
+        constexpr DescriptorField(std::uint32_t n, std::uint8_t v) : index{n}, value{v}{}
+        std::uint32_t index;
+        std::uint8_t value;
+    };
+
+    template<std::uint32_t N, typename Defaults>
+    constexpr auto elemForPos(Defaults defaults){
+        return std::get<N>(defaults);
     }
 
-    //makeDeviceDescriptor(bLength,13)
+    template<std::uint32_t N, typename Defaults, typename T, typename ... Ts>
+    constexpr auto elemForPos(Defaults defaults, T t, Ts ... ts){
+        if (t.index == N){
+            return t.value;
+        }
+        return elemForPos<N>(defaults, ts...);
+    }
+
+    template<std::uint32_t Size>
+    struct Descriptor {
+        static constexpr auto Index = Size-1;
+        template<typename DefaultType, typename ... Ts>
+        static constexpr auto make(DefaultType defaults, Ts ... ts){
+            return std::make_tuple(std::make_tuple(elemForPos<Index>(defaults, ts...)), Descriptor<Index>::make(defaults, ts...));
+        }
+    };
+
+    template<>
+    struct Descriptor<1> {
+        template<typename DefaultType, typename ... Ts>
+        static constexpr auto make(DefaultType defaults, Ts ... ts){
+            return std::make_tuple(elemForPos<0>(defaults, ts...));
+        }
+    };
+
+    auto constexpr makeField(std::uint32_t n, std::uint8_t v){
+        return Usb::DescriptorField{n,v};
+    }
+
+    template<std::uint32_t Size, typename ... Ts>
+    constexpr auto makeDescriptor(Ts ... ts){
+        static_assert(sizeof...(Ts)<=Size, "Descriptor: too many elements for given size");
+        return Usb::Descriptor<Size>::make(Usb::DeviceDescriptorDefaults, ts...);
+    }
+
+    template<typename ... Ts>
+    constexpr auto makeDeviceDescriptor(Ts ... ts){
+        return makeDescriptor<DeviceDescriptor::Length>(ts...);
+    }
 }

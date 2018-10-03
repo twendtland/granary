@@ -42,7 +42,8 @@ using BlinkLed = Led2;
 
 // constexpr Usb::DeviceDescriptor::Length<
 //
-constexpr auto f = Usb::makeDeviceDescriptor(std::make_tuple(Usb::DeviceDescriptor::Length{67}));
+__attribute__((used))
+constexpr auto f = Usb::makeDeviceDescriptor(Usb::makeField(1, 0xEE), Usb::makeField(3, 0xFF));
 
 // Usb::makeDeviceDescriptor(;
 
@@ -63,6 +64,9 @@ int main(){
     BlinkLed::init(LedConfig);
 
     TestDevice::init(43, usbHandler);
+
+    uint8_t* r = (uint8_t*)&f;
+    *r = 0xAC;
 
     for(;;);
 }
