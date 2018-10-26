@@ -1,5 +1,5 @@
 
-// Copyright 2017 Thomas Wendtland
+// Copyright 2018 Thomas Wendtland
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with \the License.
@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /*
-    Struct Config allows for compile time creation of configurations for peripherals,
+    Class Config allows for compile time creation of configurations for peripherals,
     but all values used MUST be of different type. They can be returned with 'get'
     by choosing the type to get.
 */

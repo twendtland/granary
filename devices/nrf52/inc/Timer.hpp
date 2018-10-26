@@ -63,10 +63,10 @@ template<typename Instance>
 template<typename Config>
 constexpr void nrf52::Timer<Instance>::init(const Config config, const IrqHandler handler) {
     auto mode = config.template get<Hardware::Timer::ModeType>();
-    Instance::Mode::Value::write(mode);
+    // Instance::Mode::Value::write(mode);
 
-    auto bitmode = config.template get<Hardware::Timer::BitmodeType>();
-    Instance::Bitmode::Value::write(bitmode);
+    // auto bitmode = config.template get<Hardware::Timer::BitmodeType>();
+    // Instance::Bitmode::Value::write(bitmode);
 
     auto prescaler = config.template get<std::uint8_t>();
     Instance::Prescaler::Value::write(prescaler);

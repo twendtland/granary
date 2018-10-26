@@ -40,10 +40,13 @@ using TestDevice = nrf52::UsbDevice;
 
 using BlinkLed = Led2;
 
+constexpr std::uint16_t VendorId = 0xFF45;
 // constexpr Usb::DeviceDescriptor::Length<
 //
-__attribute__((used))
-constexpr auto f = Usb::makeDeviceDescriptor(Usb::makeField(1, 0xEE), Usb::makeField(3, 0xFF));
+// __attribute__((used))
+// constexpr auto f = Usb::makeDeviceDescriptor(Usb::makeField(1, 0xEE), Usb::makeFieldLong(3, VendorId));
+
+// constexpr auto one = Usb::makeFieldT(std:uint8_t{2});
 
 // Usb::makeDeviceDescriptor(;
 
@@ -64,9 +67,9 @@ int main(){
     BlinkLed::init(LedConfig);
 
     TestDevice::init(43, usbHandler);
-
-    uint8_t* r = (uint8_t*)&f;
-    *r = 0xAC;
+    //
+    // uint8_t* r = (uint8_t*)&f;
+    // *r = 0xAC;
 
     for(;;);
 }

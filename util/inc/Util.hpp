@@ -52,10 +52,10 @@ namespace Util {
         return has_type<T>(Tuple{}) && has_all_types<Tuple>(std::tuple<Ts...>{});
     }
 
-    constexpr auto toByteTuple(std::uint16_t value) {
-        // @todo: take endiannes into account
-        auto v = static_cast<std::uint8_t>(value);
-        return std::make_tuple(std::uint8_t{(value>>8 & 0xFF)}, std::uint8_t{v & 0xFF});
-    }
+    // constexpr auto toByteTuple(std::uint16_t value) {
+    //     // @todo: take endiannes into account
+    //     auto v = static_cast<std::uint8_t>(value);
+    //     return std::make_tuple(std::uint8_t{(value>>8 & 0xFF)}, std::uint8_t{v & 0xFF});
+    // }
 }
 }
