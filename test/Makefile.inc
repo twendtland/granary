@@ -6,6 +6,7 @@ BUILDDIR = build
 BIN = $(BUILDDIR)/$(addsuffix .bin, $(NAME))
 ELF = $(BUILDDIR)/$(addsuffix .elf, $(NAME))
 HEX = $(BUILDDIR)/$(addsuffix .hex, $(NAME))
+ASM = $(BUILDDIR)/asm.txt
 
 GRANARY_DIR = ../../..
 SRCDIR = .
@@ -27,12 +28,12 @@ SOURCES += $(wildcard $(GRANARY_DIR)/util/src/*.cpp)
 
 OBJECTS += $(addsuffix .o, $(basename $(SOURCES)))
 
+CFLAGS = -mthumb -mcpu=cortex-m4 -Os -Wall -Wpedantic $(INCLUDES) -std=c++14 -ffreestanding -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections
+
 LDSCRIPT = $(GRANARY_DIR)/devices/nrf52/nrf52.ld
 LDFLAGS = -T$(LDSCRIPT)
 
-CFLAGS = -mthumb -mcpu=cortex-m4 -O0 -g -Wall -Wpedantic $(INCLUDES) -std=c++14 -nostdlib $(LDFLAGS) -fno-exceptions -fno-rtti
-
-all: $(ELF)
+all: $(ELF) $(HEX) $(BIN)
 
 $(BIN): $(ELF)
 	$(OBJCOPY) -O binary $< $@
@@ -41,7 +42,7 @@ $(HEX): $(ELF)
 	$(OBJCOPY) -O ihex $< $@
 
 $(ELF): $(OBJECTS) $(LDSCRIPT)
-	$(LD) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJECTS)
 
 %.o: %.cpp
 	mkdir -p $(BUILDDIR)
@@ -50,6 +51,7 @@ $(ELF): $(OBJECTS) $(LDSCRIPT)
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(OBJECTS)
+	rm -f $(ASM)
 
 asm: $(ELF)
-	$(OBJDUMP) -fhD $(ELF) > asm.txt
+	$(OBJDUMP) -fhd $(ELF) > $(ASM)

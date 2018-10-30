@@ -14,6 +14,7 @@
 // limitations under the License.
 
 #include "Initialization.hpp"
+#include <cstddef>
 
 extern "C" {
 
@@ -24,6 +25,21 @@ extern std::uint32_t __data_end__ ;
 extern std::uint32_t __bss_start__ ;
 extern std::uint32_t __bss_end__ ;
 
+}
+
+// providing our own memset here, since GCC will insert that and we're not
+// using the libc (yet)
+// -----------------------------------------------------------------------------
+
+extern "C" {
+
+void* memset(void* ptr, int value, size_t num) {
+    std::uint8_t* p = reinterpret_cast<uint8_t*>(ptr);
+    for (std::uint32_t i=0;i<num;i++) {
+        *p++ = value;
+    }
+    return ptr;
+}
 }
 
 // -----------------------------------------------------------------------------

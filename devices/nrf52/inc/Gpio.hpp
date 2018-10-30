@@ -1,5 +1,5 @@
 
-// Copyright 2017 Thomas Wendtland
+// Copyright 2018 Thomas Wendtland
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with \the License.
@@ -35,6 +35,7 @@ namespace nrf52 {
             static void test(const Conf config);
 
             static constexpr void set();
+            static constexpr auto& on = set;
             static constexpr void clear();
             static constexpr void toggle();
         private:

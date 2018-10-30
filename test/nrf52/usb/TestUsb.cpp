@@ -34,8 +34,6 @@ using Led1 = nrf52::Gpio<device::P0, 13, true>;
 using Led2 = nrf52::Gpio<device::P0, 14, true>;
 static constexpr auto LedConfig = nrf52::makeGpioConfig(nrf52::GpioPullType::NoPull);
 
-static constexpr granary::Pin<0, 13> DmPin;
-
 using TestDevice = nrf52::UsbDevice;
 
 using BlinkLed = Led2;
@@ -52,24 +50,21 @@ constexpr std::uint16_t VendorId = 0xFF45;
 
 // -----------------------------------------------------------------------------
 
-void usbHandler(const std::uint8_t i){
-    BlinkLed::set();
+void usbHandler(const std::uint8_t i) {
+    // BlinkLed::set();
 }
 
 // -----------------------------------------------------------------------------
 
-void defaultHandler(){
+void defaultHandler() {
 }
 
 // -----------------------------------------------------------------------------
 
 int main(){
     BlinkLed::init(LedConfig);
-
-    TestDevice::init(43, usbHandler);
-    //
-    // uint8_t* r = (uint8_t*)&f;
-    // *r = 0xAC;
+    BlinkLed::set();
+    // TestDevice::init(43, usbHandler);
 
     for(;;);
 }
@@ -85,6 +80,6 @@ void handleReset(){
 // -----------------------------------------------------------------------------
 
 __attribute__((section(".isr_vector"), used))
-constexpr auto isr = granary::makeVectorTable<60>(StackTop, granary::makeVector(Reset_IRQn, handleReset), granary::makeVector(USBD_IRQn, TestDevice::handleIrq));
+constexpr auto isr = granary::makeVectorTable<60>(StackTop, granary::makeVector(Reset_IRQn, handleReset));//, granary::makeVector(USBD_IRQn, TestDevice::handleIrq));
 
 // -----------------------------------------------------------------------------

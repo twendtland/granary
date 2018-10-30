@@ -21,10 +21,11 @@
 using namespace rye;
 
 namespace nrf52 {
-namespace Hardware {
+namespace hardware {
+namespace gpio {
 
     template <std::uint32_t BaseAddress, std::uint16_t Irq>
-    struct GpioController {
+    struct Controller {
         struct Out {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x504;
@@ -82,5 +83,6 @@ namespace Hardware {
             using Sense = Bitfield<Pin_Cnf, std::uint8_t, 16, 2, Access::ReadWrite>;
         };
     };
+}
 }
 } // end of namespace nrf52
