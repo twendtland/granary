@@ -1,8 +1,7 @@
-
 target remote 127.0.0.1:2331
 
-monitor reset
-
 file build/TestUsb.elf
+
+monitor reset
 
 continue

@@ -18,21 +18,17 @@
 #include <cstdint>
 #include "nrf52_gpio.hpp"
 #include "Config.hpp"
-#include "GpioTypes.hpp"
 
 namespace nrf52 {
 
     template<typename Port, std::uint32_t Pin, bool Inverted = false>
     class Gpio {
         public:
-            static constexpr std::uint32_t Number = Pin;
+            static constexpr std::uint32_t PinNumber = Pin;
 
             template<typename Conf>
             static constexpr void init(const Conf config);
             static void deInit();
-
-            template<typename Conf>
-            static void test(const Conf config);
 
             static constexpr void set();
             static constexpr auto& on = set;
@@ -46,8 +42,8 @@ namespace nrf52 {
 
     template<typename ... Values>
     constexpr auto makeGpioConfig(Values ... values) {
-        auto defaults  = std::make_tuple(GpioType::Output, GpioPullType::NoPull,
-                                         GpioDrive::S0S1, GpioSensing::Disabled);
+        auto defaults  = std::make_tuple(nrf52::hardware::gpio::ModeType::Output, nrf52::hardware::gpio::PullType::Disabled,
+                                         nrf52::hardware::gpio::DriveType::SS01, nrf52::hardware::gpio::SenseType::Disabled);
         return granary::makeConfig(defaults, values...);
     }
 }
@@ -57,24 +53,20 @@ namespace nrf52 {
 template<typename Port, std::uint32_t Pin, bool Inverted>
 template<typename Conf>
 constexpr void nrf52::Gpio<Port, Pin, Inverted>::init(const Conf config) {
-    auto type = config.template get<GpioType>();
-    if (type == GpioType::Output) {
-        Port::template Pin_Cnf<Pin>::Dir::write(true);
-        Port::template Pin_Cnf<Pin>::Input::write(true); // disconnect
-        Port::template Pin_Cnf<Pin>::Sense::write(std::uint8_t{0});
+    auto type = config.template get<nrf52::hardware::gpio::ModeType>();
+    if (type == nrf52::hardware::gpio::ModeType::Output) {
+        Port::template Pin_Cnfs<Pin>::Dir::write(true);
+        Port::template Pin_Cnfs<Pin>::Input::write(true); // disconnect
+        Port::template Pin_Cnfs<Pin>::Sense::write(nrf52::hardware::gpio::SenseType::Disabled);
     }
-    else if (type==GpioType::Input) {
-        Port::template Pin_Cnf<Pin>::Dir::write(false);
-        Port::template Pin_Cnf<Pin>::Input::write(false); // connect
+    else if (type==nrf52::hardware::gpio::ModeType::Input) {
+        Port::template Pin_Cnfs<Pin>::Dir::write(false);
+        Port::template Pin_Cnfs<Pin>::Input::write(false); // connect
     }
-    auto drive = config.template get<GpioDrive>();
-    using FieldType = uint8_t;
-    Port::template Pin_Cnf<Pin>::Drive::write(static_cast<FieldType>(drive));
-    auto sense = config.template get<GpioSensing>();
-    Port::template Pin_Cnf<Pin>::Drive::write(static_cast<FieldType>(sense));
-    auto pulltype = config.template get<GpioPullType>();
-    Port::template Pin_Cnf<Pin>::Drive::write(static_cast<FieldType>(pulltype));
-
+    auto drive = config.template get<nrf52::hardware::gpio::DriveType>();
+    Port::template Pin_Cnfs<Pin>::Drive::write(drive);
+    auto pulltype = config.template get<nrf52::hardware::gpio::PullType>();
+    Port::template Pin_Cnfs<Pin>::Pull::write(pulltype);
     clear();
 }
 
@@ -83,10 +75,10 @@ constexpr void nrf52::Gpio<Port, Pin, Inverted>::init(const Conf config) {
 template<typename Port, std::uint32_t Pin, bool Inverted>
 constexpr void nrf52::Gpio<Port, Pin, Inverted>::set() {
     if (Inverted == false) {
-        Port::Outset::Pins::write(std::uint32_t{1<<Pin});
+        Port::Outset::template Pin<Pin>::set();
     }
     else {
-        Port::Outclr::Pins::write(std::uint32_t{1<<Pin});
+        Port::Outclr::template Pin<Pin>::set();
     }
 }
 
@@ -95,10 +87,10 @@ constexpr void nrf52::Gpio<Port, Pin, Inverted>::set() {
 template<typename Port, std::uint32_t Pin, bool Inverted>
 constexpr void nrf52::Gpio<Port, Pin, Inverted>::clear() {
     if (Inverted == false) {
-        Port::Outclr::Pins::write(std::uint32_t{1<<Pin});
+        Port::Outclr::template Pin<Pin>::set();
     }
     else {
-        Port::Outset::Pins::write(std::uint32_t{1<<Pin});
+        Port::Outset::template Pin<Pin>::set();
     }
 }
 
@@ -106,7 +98,7 @@ constexpr void nrf52::Gpio<Port, Pin, Inverted>::clear() {
 
 template<typename Port, std::uint32_t Pin, bool Inverted>
 constexpr void nrf52::Gpio<Port, Pin, Inverted>::toggle() {
-    if (Port::Outset::Pins::read() & (1<<Pin)) {
+    if (Port::Outset::template Pin<Pin>::read() & (1<<Pin)) {
         set();
     }
     else {

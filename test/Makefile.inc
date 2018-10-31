@@ -3,6 +3,9 @@
 
 BUILDDIR = build
 
+NAME = Test
+DEVICE = nrf52
+
 BIN = $(BUILDDIR)/$(addsuffix .bin, $(NAME))
 ELF = $(BUILDDIR)/$(addsuffix .elf, $(NAME))
 HEX = $(BUILDDIR)/$(addsuffix .hex, $(NAME))
@@ -30,7 +33,7 @@ OBJECTS += $(addsuffix .o, $(basename $(SOURCES)))
 
 CFLAGS = -mthumb -mcpu=cortex-m4 -Os -Wall -Wpedantic $(INCLUDES) -std=c++14 -ffreestanding -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections
 
-LDSCRIPT = $(GRANARY_DIR)/devices/nrf52/nrf52.ld
+LDSCRIPT = $(GRANARY_DIR)/devices/$(DEVICE)/linkerscript.ld
 LDFLAGS = -T$(LDSCRIPT)
 
 all: $(ELF) $(HEX) $(BIN)
@@ -43,6 +46,7 @@ $(HEX): $(ELF)
 
 $(ELF): $(OBJECTS) $(LDSCRIPT)
 	$(LD) $(LDFLAGS) -o $@ $(OBJECTS)
+	rm -rf $(OBJECTS)
 
 %.o: %.cpp
 	mkdir -p $(BUILDDIR)
@@ -55,3 +59,9 @@ clean:
 
 asm: $(ELF)
 	$(OBJDUMP) -fhd $(ELF) > $(ASM)
+
+flash:
+	../../gdbclient.sh ../flash.gdb
+
+debug:
+	../../gdbclient.sh ../debug.gdb

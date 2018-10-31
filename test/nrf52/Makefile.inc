@@ -1,0 +1,2 @@
+
+DEVICE = nrf52

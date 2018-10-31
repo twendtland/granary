@@ -31,12 +31,10 @@ using namespace granary::unit;
 static constexpr std::uint32_t StackTop = 0x20003000;
 
 using Led1 = nrf52::Gpio<device::P0, 13, true>;
-using Led2 = nrf52::Gpio<device::P0, 14, true>;
-static constexpr auto LedConfig = nrf52::makeGpioConfig(nrf52::GpioPullType::NoPull);
+using BlinkLed = nrf52::Gpio<device::P0, 14, true>;
+static constexpr auto LedConfig = nrf52::makeGpioConfig();
 
 using TestDevice = nrf52::UsbDevice;
-
-using BlinkLed = Led2;
 
 constexpr std::uint16_t VendorId = 0xFF45;
 // constexpr Usb::DeviceDescriptor::Length<
@@ -62,7 +60,9 @@ void defaultHandler() {
 // -----------------------------------------------------------------------------
 
 int main(){
+    Led1::init(LedConfig);
     BlinkLed::init(LedConfig);
+    Led1::set();
     BlinkLed::set();
     // TestDevice::init(43, usbHandler);
 

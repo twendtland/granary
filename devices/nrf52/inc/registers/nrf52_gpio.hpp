@@ -1,4 +1,5 @@
 
+
 // Copyright 2018 Thomas Wendtland
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,47 +25,84 @@ namespace nrf52 {
 namespace hardware {
 namespace gpio {
 
+    enum class ModeType {
+        Input,
+        Output
+    };
+
+    enum class PullType {
+        Disabled = 0,
+        Pulldown = 1,
+        Pullup = 3
+    };
+
+    enum class DriveType {
+        SS01 = 0,
+        HS01 = 1,
+        SH01 = 2,
+        HH01 = 3,
+        DS01 = 4,
+        DH01 = 5,
+        SD01 = 6,
+        HD01 = 7
+    };
+
+    enum class SenseType {
+        Disabled = 0,
+        High = 2,
+        Low = 3
+    };
+
     template <std::uint32_t BaseAddress, std::uint16_t Irq>
     struct Controller {
+        static constexpr std::uint32_t Interrupt = Irq;
         struct Out {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x504;
-            using Pins = Bitfield<Out, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Out, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct Outset {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x508;
-            using Pins = Bitfield<Outset, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Outset, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct Outclr {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x50c;
-            using Pins = Bitfield<Outclr, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Outclr, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct In {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x510;
-            using Pins = Bitfield<Out, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<In, bool, PinNumber, 1, Access::ReadOnly>;
         };
         struct Dir {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x514;
-            using Pins = Bitfield<Out, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Dir, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct Dirset {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x518;
-            using Pins = Bitfield<Out, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Dirset, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct Dirclr {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x51c;
-            using Pins = Bitfield<Out, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Dirclr, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct Latch {
             using WidthType = std::uint32_t;
             static constexpr WidthType Address = BaseAddress + 0x520;
-            using Pins = Bitfield<Out, std::uint32_t, 0, 32, Access::ReadWrite>;
+            template<std::uint32_t PinNumber>
+            using Pin = Bitfield<Latch, bool, PinNumber, 1, Access::ReadWrite>;
         };
         struct Detectmode {
             using WidthType = std::uint32_t;
@@ -72,17 +110,18 @@ namespace gpio {
             using Value = Bitfield<Detectmode, bool, 0, 1, Access::ReadWrite>;
         };
 
-        template<std::uint32_t Number>
-        struct Pin_Cnf {
+        template<std::uint32_t PinNumber>
+        struct Pin_Cnfs {
             using WidthType = std::uint32_t;
-            static constexpr WidthType Address = BaseAddress + 0x700 + (Number * sizeof(WidthType));
-            using Dir = Bitfield<Pin_Cnf, bool, 0, 1, Access::ReadWrite>;
-            using Input = Bitfield<Pin_Cnf, bool, 1, 1, Access::ReadWrite>;
-            using Pull = Bitfield<Pin_Cnf, std::uint8_t, 2, 2, Access::ReadWrite>;
-            using Drive = Bitfield<Pin_Cnf, std::uint8_t, 8, 3, Access::ReadWrite>;
-            using Sense = Bitfield<Pin_Cnf, std::uint8_t, 16, 2, Access::ReadWrite>;
+            static constexpr WidthType Address = BaseAddress + 0x700 + (0x4 *PinNumber);
+            using Dir = Bitfield<Pin_Cnfs, bool, 0, 1, Access::ReadWrite>;
+            using Input = Bitfield<Pin_Cnfs, bool, 1, 1, Access::ReadWrite>;
+            using Pull = Bitfield<Pin_Cnfs, PullType, 2, 2, Access::ReadWrite>;
+            using Drive = Bitfield<Pin_Cnfs, DriveType, 8, 3, Access::ReadWrite>;
+            using Sense = Bitfield<Pin_Cnfs, SenseType, 16, 2, Access::ReadWrite>;
         };
     };
+
 }
 }
 } // end of namespace nrf52

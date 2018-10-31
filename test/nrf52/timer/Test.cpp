@@ -29,7 +29,7 @@ static constexpr std::uint32_t StackTop = 0x20003000;
 
 using Led1 = nrf52::Gpio<device::P0, 13, true>;
 using Led2 = nrf52::Gpio<device::P0, 14, true>;
-static constexpr auto LedConfig = nrf52::makeGpioConfig(nrf52::GpioPullType::NoPull);
+static constexpr auto LedConfig = nrf52::makeGpioConfig();
 
 using PeriodicTimer = nrf52::Timer<device::Timer0>;
 static constexpr auto PeriodTimerConfig = nrf52::makeTimerConfig();
